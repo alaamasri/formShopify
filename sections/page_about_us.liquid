@@ -1,0 +1,173 @@
+<section class="about_page">
+  <div class="abput_page_main" style="background-image: url({{ section.settings.main_banner| img_url: 'master', format: 'pjpg' }});">
+    <div class="container">
+      <div class="about_page_heding">
+        <h1 class="main-title">{{ section.settings.heading }}</h1>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="difference">
+  {% for block  in section.blocks %}
+  {% capture thecycle %}{% cycle 'odd', 'even' %}{% endcapture %}
+  {% if thecycle == 'odd' %}
+  <div class="difference_main">
+    <div class="difference_img_one">
+      {% if block.settings.background_image != blank %}<img src="{{ block.settings.background_image| img_url: 'master'}}" />{% endif %}
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <div class="difference_right  ">
+            <img src="{{ block.settings.left_right_image| img_url: 'master', format: 'pjpg' }}" alt="{{ block.settings.title }}"/>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <div class="about_us_page" >            
+            <h4>{{ block.settings.title }}</h4>
+            {% if block.settings.tag != blank  %}<h6>{{ block.settings.tag }}</h6>{% endif %}
+            {{ block.settings.details }}
+
+            {% if block.settings.link %} <a href="{{ block.settings.link }}" class="btn">
+            {{ block.settings.btn }}
+            </a> {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hidden-xs">
+      {% if block.settings.bottom_line_desktop != blank  %}
+      <div class="difference_txt_one aboutdiff">
+        <h4>{{ block.settings.bottom_line_desktop }}</h4>
+      </div>
+      {% endif %}
+    </div>
+    <div class="visible-xs">
+      {% if block.settings.bottom_line_mobile  != blank %}
+      <div class="difference_txt_one aboutdiff">
+        <h4> {{ block.settings.bottom_line_mobile }}</h4>
+      </div>
+      {% endif %}
+    </div>    
+  </div>
+  {% else %}
+  <div class="clearfix"></div>
+  <div class="">
+    <div class="about_right_us_page">
+      <div class="about_right_us_page_img">
+        {% if block.settings.background_image != blank %}<img src="{{ block.settings.background_image| img_url: 'master', format: 'pjpg' }}">{% endif %}
+      </div>
+      <div class="about_right_us_page_one">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 visible-xs">
+              <div class="about_right_us_page_one_right">
+                <img src="{{ block.settings.left_right_image| img_url: 'master', format: 'pjpg' }}" alt="{{ block.settings.title }}"/>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <div class="about_right_us_page_one_left " >
+                <h3>{{ block.settings.title }} 
+                </h3>
+                {{ block.settings.details }}
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 hidden-xs">
+              <div class="about_right_us_page_one_right">
+                <img src="{{ block.settings.left_right_image| img_url: 'master', format: 'pjpg' }}" alt="{{ block.settings.title }}"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {% endfor %}
+</section>
+
+{% schema %}
+  {
+    "name": "Page About Us",
+    "settings": [
+      {
+        "id": "main_banner",
+        "type": "image_picker",
+        "label": "Main Banner Image"
+      },    
+      {
+        "id": "heading",
+        "type": "text",
+        "label": "Main Heading",
+        "default": "About Us"
+      }			
+],
+	"blocks": [
+      {
+        "type": "repeat",
+        "name": "Slider",
+        "settings": [
+		  {
+            "id": "background_image",
+            "type": "image_picker",
+        	"label": "background Image"
+          }, 
+		  {
+            "id": "left_right_image",
+            "type": "image_picker",
+        	"label": "Left Right Image"
+          },
+		  {
+            "id": "title",
+            "type": "text",
+        	"label": "Title",
+        	"default": "A Visionary Spirit"
+          }, 
+		  {
+            "id": "tag",
+            "type": "text",
+        	"label": "tag",
+        	"default": "FORMing Excellence in Image Wear"
+          }, 
+		  {
+            "id": "details",
+            "type": "textarea",
+        	"label": "Details Line",
+        	"default": "<p>From our origins as a small family operation founded 30 years ago, FORM has become one of the premier uniform designers and manufacturers in the Middle East and a recognized purveyor of excellence. Our background in bespoke and couture fashion, as well as our commitment to quality craftsmanship, signature custom designs and outstanding customer care, has led us to become a major supplier of many of the region’s 5-star hotels, in addition to numerous preemi-nent restaurants, schools and  creative design projects across the MENA region.</p>"
+          },  
+		  {
+            "id": "btn",
+            "type": "text",
+        	"label": "Button Label",
+        	"default": "LEARN MORE ABOUT OUR HISTORY"
+          },  
+		  {
+            "id": "link",
+            "type": "url",
+        	"label": "Button Link"
+          },
+          {
+            "id": "bottom_line_desktop",
+            "type": "text",
+            "label": "Bottom Line Desktop",
+            "default": "<span>premi</span>er uniform designers "
+          },
+          {
+            "id": "bottom_line_mobile",
+            "type": "text",
+            "label": "Bottom Line Mobile",
+            "default": "premier uniform designers"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

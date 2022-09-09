@@ -1,0 +1,224 @@
+<section class="about_page">
+  <div class="abput_page_main" style="background-image: url({{ section.settings.main_banner| img_url: 'master', format: 'pjpg' }});">
+    <div class="container">
+      <div class="about_page_heding">
+        <h1 class="main-title">{{ section.settings.heading }}</h1>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="clearfix"></div>
+
+<section class="new_corporate ">
+  <div class="container">
+    <div class="coporate_heading">
+      {% if section.settings.title != '' %}
+      <h2>{{ section.settings.title }}</h2>
+      {% endif %}
+      <p>{{ section.settings.content }}</p>
+    </div>
+  </div>
+
+  <div class="corporate_sec_one" style="background-image:url({{ section.settings.back_img | img_url:'master', format: 'pjpg' }})">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <div class="corporate_sec_left">
+            <img src="{{ section.settings.left_img| img_url:'master', format: 'pjpg' }}" alt="{{ section.settings.coll_title }}" >
+
+          </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <div class="corporate_sec_right">
+            <h4>{{ section.settings.coll_title }}</h4>
+            <h3>{{ section.settings.corpo_title }}</h3>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="clearfix"></div>
+  <div class="corporate_sec_two">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <div class="left_corporate_sect">
+         {{ section.settings.left_content }}
+            <div class="sect_two_img">
+              <div class="sect_two_img_absol">
+                <img src="{{ section.settings.left_back_img | img_url:'master', format: 'pjpg' }}" title="" alt="" >
+              </div>
+              <div class="sect_two_left_img">
+                <img src="{{ section.settings.left_men_img | img_url:'master', format: 'pjpg' }}" title="" alt="" >
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <p class="second_p">{{ section.settings.left_content_two }}</p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <div class="row">
+            {% for block in section.blocks limit:4 %}
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <div class="shirt_img">
+                <img src="{{ block.settings.shirt_img | img_url:'master', format: 'pjpg' }}" title="" alt="" >
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          
+          <div class="right_img_men">
+          <img src="{{ section.settings.right_men_img | img_url:'master', format: 'pjpg' }}" title="" alt="" >
+          </div>
+          
+         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="desc_section" style="background-color:{{ section.settings.bg_color }}" >
+  <div class="desc_para">
+  
+    <h6>{{ section.settings.desc_title }}</h6>
+  </div>
+</section>
+  
+<section class="last_corpo_section">
+  <div class="container">
+    <div class="rwo">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <div class="desc_left">
+          <img src="{{ section.settings.desc_one | img_url:'master', format: 'pjpg' }}" title="{{ section.settings.desc_title }}" alt="{{ section.settings.desc_title }}" >
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <div class="desc_right">
+          <img src="{{ section.settings.desc_two | img_url:'master', format: 'pjpg' }}" title="{{ section.settings.desc_title }}" alt="{{ section.settings.desc_title }}" >
+          <p>{{ section.settings.desc_para }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "New Kitchen Page",
+    "settings": [
+      {
+        "id": "main_banner",
+        "type": "image_picker",
+        "label": "Main Banner Image"
+      },    
+      {
+        "id": "heading",
+        "type": "text",
+        "label": "Main Heading"
+      },
+      {
+        "id": "title",
+        "type": "text",
+        "label": "Title"
+      },  
+      {
+        "id": "content",
+        "type": "textarea",
+        "label": "Content"     
+      },  
+      {
+        "id": "back_img",
+        "type": "image_picker",
+        "label": "Background Image"     
+      },  
+      {
+        "id": "left_img",
+        "type": "image_picker",
+        "label": "Left Image"     
+      },  
+      {
+        "id": "coll_title",
+        "type": "text",
+        "label": "Heading"     
+      },  
+      {
+        "id": "corpo_title",
+        "type": "text",
+        "label": "Subheading"     
+      },  
+      {
+        "id": "left_content",
+        "type": "textarea",
+        "label": "Content"     
+      },  
+      {
+        "id": "left_back_img",
+        "type": "image_picker",
+        "label": "Background Image"     
+      },  
+      {
+        "id": "left_men_img",
+        "type": "image_picker",
+        "label": "Image"     
+      },  
+      {
+        "id": "left_content_two",
+        "type": "textarea",
+        "label": "Content"     
+      },  
+      {
+        "id": "right_men_img",
+        "type": "image_picker",
+        "label": "Image"     
+      },  
+      {
+        "id": "bg_color",
+        "type": "color",
+        "label": "Background Color"     
+      },  
+      {
+        "id": "desc_title",
+        "type": "text",
+        "label": "Title"     
+      },  
+      {
+        "id": "desc_one",
+        "type": "image_picker",
+        "label": "Image"     
+      },  
+      {
+        "id": "desc_two",
+        "type": "image_picker",
+        "label": "Image"     
+      },  
+      {
+        "id": "desc_para",
+        "type": "textarea",
+        "label": "Content"     
+      }
+],
+	"blocks": [
+      {
+        "type": "shirt",
+        "name": "Shirt Image",
+        "settings": [
+          {
+          "id": "shirt_img",
+          "type": "image_picker",
+          "label": "Shirt Image"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

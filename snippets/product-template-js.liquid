@@ -1,0 +1,195 @@
+<script>
+    function getImageLightness(imageSrc, callback) {
+        var img = document.createElement("img");
+        img.src = imageSrc;
+        img.style.display = "none";
+        img.crossOrigin = "Anonymous";
+        document.body.appendChild(img);
+
+        var colorSum = 0;
+
+        img.onload = function () { // create canvas
+            var canvas = document.createElement("canvas");
+            canvas.width = this.width;
+            canvas.height = this.height;
+
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(this, 0, 0);
+
+            var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            var data = imageData.data;
+            var r,
+                g,
+                b,
+                avg;
+
+            for (var x = 0, len = data.length; x < len; x += 4) {
+                r = data[x];
+                g = data[x + 1];
+                b = data[x + 2];
+
+                avg = Math.floor((r + g + b) / 3);
+                colorSum += avg;
+            }
+
+            var brightness = Math.floor(colorSum / (this.width * this.height));
+
+            if (brightness > 90) {
+                callback("light");
+            } else {
+                callback("dark");
+            }
+
+        }
+    }
+  
+  	function changeBreadcrumbsColor(featuredImgSrc){
+    getImageLightness(featuredImgSrc, function (mode) {
+        if (mode === "light") { // Light Mode
+            $(".breadcrumb a").css("color", "#000");
+        } else { // Dark Mode
+            $(".breadcrumb a").css("color", "#fff");
+        }
+    });
+  }
+
+    $(function () {
+        
+        function buildDescriptionTabs() {
+            var productDesc1 = $("#productDesc").html().split("<h1>");
+            var productDesc2;
+            var productDescHTML = "";
+
+            for (var i = 1; i < productDesc1.length; i++) {
+                productDescHTML += "<div class=\"tab-item\">";
+                productDesc2 = productDesc1[i].split("</h1>");
+                for (var j = 0; j < productDesc2.length; j++) {
+                    if (j % 2 === 0) {
+                        productDescHTML += "<div class=\"tab-title\">" + productDesc2[j].replace("<br>", "") + "</div>";
+                    } else {
+                        productDescHTML += "<div class=\"tab-text\">" + productDesc2[j] + "</div>"
+                    }
+
+                }
+                productDescHTML += "</div>";
+
+            }
+            $(".product-tabs").prepend(productDescHTML);
+            $("#productDesc").remove();
+            // productDesc=productDesc.replace('<h1>','<div class="tab-title">').replace('</h1>','</div></div>');
+            $(".product-tabs .tab-title,.emb-tabs .tab-title").click(function () {
+                if ($(this).parent().hasClass("active")) {
+                   $(this).parent().removeClass("active");
+                   $(this).parent().parent().animate({scrollTop: 0},{duration :0});
+
+                } else {
+                  	var offset = $(this).parent().offset().top;
+					var index = $(this).parent().index();
+                    $(".product-tabs .tab-item,.emb-tabs .tab-item").removeClass("active");
+                    $(this).parent().addClass("active");
+                  	if(index >= 3){
+	 	                $(this).parent().parent().animate({scrollTop: offset});
+                    }
+
+                }
+            });
+        }
+        buildDescriptionTabs();
+
+
+        function setupImageSlideArrows() { // Show the first image in Media (featured Image) onload
+            $(".product-single__thumbnails-item.is-active a").click();
+
+            // Images thumb click on mobile
+            if ($(window).width() < 992) {
+                $(".product-single__thumbnails-item a").click(function () {
+                    $("html, body").animate({
+                        scrollTop: 0
+                    }, 500);
+                });
+            }
+          
+            window.addEventListener('productThumbImagesClicked', function (event) {
+              if(event && event.detail && event.detail.imageId && $('#FeaturedImage-product-template-' + event.detail.imageId).length){
+                var thumbImageSrc = "https:" +  $('#FeaturedImage-product-template-' + event.detail.imageId).attr('src');
+                changeBreadcrumbsColor(thumbImageSrc);
+              }
+            }, false);
+          
+            // Slider arrow action
+            $(".product-slider-arrow.next").click(function () {
+                $(".product-single__thumbnails-item .active-thumb")
+                    .parent()
+                    .next("li")
+                    .children("a")
+                    .click();
+
+                if ($(".product-single__thumbnails-item .active-thumb").parent().is(":first-child")) {
+                    $(".product-slider-arrow.prev").hide();
+                } else {
+                    $(".product-slider-arrow.prev").show();
+                }
+                if ($(".product-single__thumbnails-item .active-thumb")
+                        .parent()
+                        .next("li")
+                        .length < 1) {
+                    $(".product-slider-arrow.next").hide();
+                }
+            });
+
+            $(".product-slider-arrow.prev").click(function () {
+                $(".product-single__thumbnails-item .active-thumb")
+                    .parent()
+                    .prev("li")
+                    .children("a")
+                    .click();
+
+                if ($(".product-single__thumbnails-item .active-thumb").parent().is(":last-child")) {
+                    $(".product-slider-arrow.next").hide();
+                } else {
+                    $(".product-slider-arrow.next").show();
+
+                }
+
+                if ($(".product-single__thumbnails-item .active-thumb")
+                        .parent()
+                        .prev("li")
+                        .length < 1) {
+                    $(".product-slider-arrow.prev").hide();
+                }
+            });
+
+
+        }
+
+        setupImageSlideArrows();
+
+        function buildBreadCrumbs() { // build breadcrumbs
+            var breadCrumbs = window.productContext.breadcrumbs;
+            if (breadCrumbs.length) {
+                var b_title;
+                var b_link;
+                var breadCrumbHtml = "";
+                for (var i = 0; i < breadCrumbs.length; i++) {
+                    if (breadCrumbs[i].filter_title.length) {
+                        breadCrumbHtml += "<a href=" + breadCrumbs[i].url + ">" + breadCrumbs[i].filter_title + "</a>";
+                    } else {
+                        breadCrumbHtml += "<a href=" + breadCrumbs[i].url + ">" + breadCrumbs[i].title + "</a>";
+                    }
+                }
+                $(".breadcrumb").prepend(breadCrumbHtml);
+            }
+
+            // setup breadcrumbs text color based on featured image color mode (dark/light)
+            var featuredImgSrc = "https:" + "{{ featured_image | img_url }}";
+			
+            if (featuredImgSrc) {
+                changeBreadcrumbsColor(featuredImgSrc);
+            }
+        }
+        buildBreadCrumbs();
+      	
+    
+
+    });
+</script>

@@ -1,0 +1,267 @@
+<script>
+    {% comment %} Define current collection details {% endcomment %}
+  
+    window.collectionContext = {
+      current_collection : {},
+      all_collections: {},
+      collection_tree:{},
+      collection_filters:[],
+      main_collections:[],
+      master_collection: null,
+      colors_object : {%- if shop.metafields.colors.collections -%} {{shop.metafields.colors.collections | json}}{%- else -%} null {%- endif -%}
+    };
+    
+    {%- if collection -%}
+    
+      window.collectionContext["current_collection"] = {
+          id: '{{collection.id}}',
+          handle: '{{collection.handle}}',
+          title : '{{collection.title}}',
+            collection_type: {%- if collection.metafields.filter -%} '{{collection.metafields.filter["collection_type"]}}'{%- else -%} null {%- endif -%},
+            parent_collection: {%- if collection.metafields.filter -%} '{{collection.metafields.filter["parent_collection"]}}' {%- else -%} null {% endif %},
+          url : '{{collection.url}}',
+          link : '{{collection.url}}',
+          products_count: '{{collection.products_count}}',
+          product_types : [],
+          tags : [],
+          filters : {},
+          metafields: {}
+      }
+      
+     {% comment %} Setup tags, type and metafields for the current colleciton{% endcomment %}
+    
+     {%- for tag in collection.tags -%}
+       window.collectionContext.current_collection.tags.push('{{ tag }}');
+     {%- endfor -%}
+                                          
+     {%- for product_type in collection.all_types -%}
+       window.collectionContext.current_collection.product_types.push('{{ product_type }}');
+     {%- endfor -%}
+                                                            
+     {%- for field in collection.metafields.filter -%}
+       window.collectionContext.current_collection.metafields["{{ field | first }}"] = '{{ field | last }}';
+     {%- endfor -%}
+  
+    {%- endif -%}
+  
+                                                             
+    {% comment %} Setup collection tree for all collection in the website {% endcomment %}
+                                                            
+    var collectionItemObj = null;
+    {% for collectionItem in collections %}
+       collectionItemObj = {
+          id: '{{collectionItem.id}}',
+          handle: '{{collectionItem.handle}}',
+          title : '{{collectionItem.title}}',
+          filter_title : {%- if collectionItem.metafields.filter -%} '{{collectionItem.metafields.filter["filter_title"]}}' {%- endif -%},
+          url : '{{collectionItem.url}}',
+          link : '{{collectionItem.url}}',
+          products_count: '{{collectionItem.products_count}}',
+          collection_type: {%- if collectionItem.metafields.filter -%} '{{collectionItem.metafields.filter["collection_type"]}}' {%- endif -%},
+          parent_collection: {%- if collectionItem.metafields.filter -%} '{{collectionItem.metafields.filter["parent_collection"]}}' {%- endif -%},
+          order: {%- if collectionItem.metafields.filter -%} '{{collectionItem.metafields.filter["order"]}}' {%- endif -%},
+          enabled: {%- if collectionItem.metafields.filter and collectionItem.metafields.filter["enabled"] -%} true {%- else -%} false {%- endif -%}
+        };
+
+	   {% unless collectionItem.metafields.filter and collectionItem.metafields.filter["enabled"] %}
+		{%- if collectionItem.metafields.filter["collection_type"] == "Category" -%}
+        	{% continue %}
+        {%- endif -%}     
+       {% endunless  %}
+
+       window.collectionContext.all_collections['{{collectionItem.handle}}'] = collectionItemObj;
+                                                             
+       if(collectionItemObj.parent_collection){
+         
+          if(!window.collectionContext.collection_tree[collectionItemObj.parent_collection]){
+              window.collectionContext.collection_tree[collectionItemObj.parent_collection] = [];
+          }
+  
+          window.collectionContext.collection_tree[collectionItemObj.parent_collection].push(collectionItemObj);
+       }
+  
+    {% endfor %}
+    
+    {% comment %} Define the main/master colleciton for the current collection{% endcomment %}
+  
+    switch(window.collectionContext.current_collection.collection_type) {
+       case 'Main Collection':
+         window.collectionContext.master_collection = window.collectionContext.current_collection.handle;
+         break;
+       case 'Category':
+         window.collectionContext.master_collection = window.collectionContext.current_collection.parent_collection;
+         break;
+       case 'Sub-Category':
+         window.collectionContext.master_collection = window.collectionContext.all_collections[window.collectionContext.current_collection.parent_collection].parent_collection;
+         break;
+       default:
+    }
+    
+    {% comment %} Setup tags filters for the current collection {% endcomment %}
+    
+    if(window.collectionContext.current_collection && window.collectionContext.current_collection.tags){
+    
+      for(let i = 0;i < window.collectionContext.current_collection.tags.length;i++){
+         var tag = window.collectionContext.current_collection.tags[i].split("_");
+         var filterItem = null;
+  
+         if(tag && tag.length > 1){
+           tag[0] = tag[0].toLowerCase();
+           tag[1] = tag[1];
+           
+           var _link = window.collectionContext.current_collection.tags[i].replace(" ","-");
+           filterItem = {
+             name : tag[1],
+             link: _link
+           };
+           
+           var combinedFilter = null;
+           var hasColor = tag[0] === 'color';
+           var hasCombinedColor = false;
+           var hasPrintColor = false;
+           
+           filterItem.hasColor = hasColor;
+           
+           if(window.collectionContext && window.collectionContext.colors_object && window.collectionContext.colors_object[tag[1]]){
+              var _colorValue = window.collectionContext.colors_object[tag[1]].split('_');
+              if(_colorValue[0].toLowerCase() === 'img'){
+                combinedFilter = ['img',_colorValue[1]];
+              }else {
+	              combinedFilter = _colorValue[1].split('-');
+              }
+             
+             if(hasColor && combinedFilter.length == 1){
+               //then it has one color
+               filterItem.colorCode = combinedFilter[0];
+             }
+           }else {
+              combinedFilter = tag[1].split('-');
+           }
+           
+           if(combinedFilter.length > 1){
+             if(combinedFilter[0] && combinedFilter[0].toLowerCase() === 'img'){
+                 filterItem.hasPrintColor = true;
+                 filterItem.printPath = '{{ '[[print_path]]' | append: '.jpg' | asset_img_url: '100x'}}';
+                 filterItem.printPath = filterItem.printPath.replace('[[print_path]]',combinedFilter[1]);
+             }else {
+                 filterItem.hasCombinedColor = true;
+                 filterItem.colorsCombination = [combinedFilter[0],combinedFilter[1]];
+             }
+           }
+           
+           if(!window.collectionContext.current_collection.filters[tag[0]]){
+             window.collectionContext.current_collection.filters[tag[0]] = [];
+           }
+  
+  
+           window.collectionContext.current_collection.filters[tag[0]].push(filterItem);
+         }
+      }
+      
+	  //skip tag == collection when the user in the master collection
+      if(window.collectionContext.current_collection.collection_type == "Main Collection" && window.collectionContext.current_collection.filters["collection"]){
+         delete window.collectionContext.current_collection.filters["collection"];
+      }
+    }
+    
+    
+  	{% comment %} Setup Main Collections {% endcomment %}
+    for(collection in collectionContext.all_collections ){
+      var collectionItem = collectionContext.all_collections[collection];
+      if(collectionItem.collection_type === 'Main Collection'){
+          var mainCollectionItem= {
+            title : collectionItem.title,
+            filter_title : collectionItem.filter_title || collectionItem.title,
+            order : collectionItem.order,
+            handle : collectionItem.handle,
+            link : collectionItem.url
+          }
+          
+          collectionContext.main_collections.push(mainCollectionItem);
+      }
+    }
+  
+     //sort main collections
+     if(collectionContext.main_collections && collectionContext.main_collections.length > 0){
+          function compare( a, b ) {
+            if ( a.order < b.order ){
+              return -1;
+            }
+            if ( a.order > b.order ){
+              return 1;
+            }
+            return 0;
+          }
+        
+          collectionContext.main_collections.sort( compare );
+     }
+  
+  
+  
+    {% comment %} Setup collection filters tree for the main collection {% endcomment %}
+    var allCollectionsMode = collectionContext.current_collection.handle === 'all';
+    if(collectionContext.all_collections && allCollectionsMode){
+      for(collection in collectionContext.all_collections ){
+        var collectionItem = collectionContext.all_collections[collection];
+        if(collectionItem.enabled && collectionItem.collection_type === 'Main Collection'){
+          var categoryItemFilter= {
+            title : collectionItem.title,
+            filter_title : collectionItem.filter_title || collectionItem.title,
+            order : collectionItem.order,
+            handle : collectionItem.handle,
+            link : collectionItem.url
+          }
+          
+          collectionContext.collection_filters.push(categoryItemFilter);
+        }
+      }
+	  collectionContext.main_collections = [];
+    }else if(collectionContext.collection_tree && collectionContext.collection_tree[collectionContext.master_collection]){
+       for(i = 0; i< collectionContext.collection_tree[collectionContext.master_collection].length ; i++){
+         var masterCollectionItem = collectionContext.collection_tree[collectionContext.master_collection][i];
+         if(masterCollectionItem){
+  
+           var collectionFilterItem = {
+             title : masterCollectionItem.title,
+             filter_title : masterCollectionItem.filter_title,
+             order : masterCollectionItem.order,
+             handle : masterCollectionItem.handle,
+             link : masterCollectionItem.url,
+             sub_categories : []
+           }
+  
+           if(collectionContext.collection_tree[masterCollectionItem.handle] 
+             && collectionContext.collection_tree[masterCollectionItem.handle].length > 0){
+                 for(e = 0 ; e < collectionContext.collection_tree[masterCollectionItem.handle].length ; e++){
+                     var subItem = collectionContext.collection_tree[masterCollectionItem.handle][e];
+                     if(subItem){
+                         collectionFilterItem.sub_categories.push({
+                         title: subItem.title,
+                         filter_title: subItem.filter_title,
+                         handle: subItem.handle,
+                         link: subItem.url,
+                       });
+                     }
+                 }
+  
+            }
+            collectionContext.collection_filters.push(collectionFilterItem);
+         }
+     	}
+      //sort collection filters
+     if(collectionContext.collection_filters && collectionContext.collection_filters.length > 0){
+          function compare( a, b ) {
+            if ( a.order < b.order ){
+              return -1;
+            }
+            if ( a.order > b.order ){
+              return 1;
+            }
+            return 0;
+          }
+        
+          collectionContext.collection_filters.sort( compare );
+     }
+    }
+  
+  </script>

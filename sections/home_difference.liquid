@@ -1,0 +1,107 @@
+<section class="difference">
+  <div class="difference_main">
+    <div class="difference_img">
+      <img src="{{ section.settings.difference_bg | img_url: 'master', format: 'pjpg'}}">
+    </div>
+    <div class="container">
+      <div class="row" class="splash">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 visible-xs">
+          <div data-delighter class="difference_right delighter bottom">
+            <img src="{{ section.settings.difference_image | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.tag }}">
+          </div>
+        </div>
+        <div class="right col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <div class="difference_left" >
+            <h5>{{ section.settings.tag }}</h5>
+            <h3>{{ section.settings.title }}</h3>
+            <p >{{ section.settings.description }}</p>
+            <a href="{{ section.settings.link }}" class="btn">
+              {{ section.settings.btn }} 
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 hidden-xs ">
+          <div data-delighter class="difference_right  delighter bottom">
+            <img src="{{ section.settings.difference_image | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.tag }}">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="difference_txt">
+      <h4 class="hidden-xs">{{ section.settings.bottom_line_desktop }}</h4>
+      <h4 class="visible-xs">{{ section.settings.bottom_line_mobile }}</h4>
+    </div>  
+  </div>
+  <div class="clearfix"></div>
+</section>
+
+{% schema %}
+  {
+    "name": "Home Difference",
+    "settings": [
+        {
+          "id": "difference_bg",
+          "type": "image_picker",
+          "label": "Difference BG Image"
+        },
+        {
+          "id": "difference_image",
+          "type": "image_picker",
+          "label": "Difference Image"
+        },
+	    {
+          "id": "tag",
+          "type": "text",
+          "label": "Tag",
+          "default": "DIFFERENCE"
+        },
+        {
+          "id": "title",
+          "type": "text",
+          "label": "Title",
+          "default": "Your Brand + FORM: <br> A Creative Partnership"
+        },  
+        {
+          "id": "description",
+          "type": "textarea",
+          "label": "Description",
+          "default": "From the overarching inspiration to the tiniest details, FORM pieces are inspired by function and expressive  contemporary style. Every client collection is a new   opportunity to define and curate a personalized aesthetic. We call this image FORMation."
+        },  
+        {
+          "id": "btn",
+          "type": "text",
+          "label": "Button Label",
+          "default": "LEARN MORE"
+        },  
+        {
+          "id": "link",
+          "type": "url",
+          "label": "Button Link"
+        },
+        {
+          "id": "bottom_line_desktop",
+          "type": "text",
+          "label": "Bottom Line Desktiop",
+          "default": "THE CORPORATE COUTURI<span>ERS</span>"
+        },
+        {
+          "id": "bottom_line_mobile",
+          "type": "text",
+          "label": "Bottom Line Mobile",
+          "default": "THE CORPORATE COUTURIERS"
+        }
+],
+    "presets": [
+      {
+        "name": "Home Difference",
+        "category": "Custom"        
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

@@ -1,0 +1,139 @@
+{% comment %}
+<ul class="list--inline text-center">
+    {% unless paginate.previous.is_link %}
+      <li aria-hidden="true">
+        <button class="btn btn--tertiary btn--narrow" disabled>
+          {% include 'icon-arrow-left' %}
+          <span class="icon__fallback-text">{{ 'general.pagination.previous' | t }}</span>
+        </button>
+      </li>
+      {% else %}
+      <li>
+        <a href="{{ paginate.previous.url }}" class="btn btn--tertiary btn--narrow">
+          {% include 'icon-arrow-left' %}
+          <span class="icon__fallback-text">{{ 'general.pagination.previous' | t }}</span>
+        </a>
+      </li>
+    {% endunless %}
+    <li class="pagination__text">
+      {{ 'general.pagination.current_page' | t: current: paginate.current_page, total: paginate.pages }}
+    </li>
+    {% unless paginate.next.is_link %}
+      <li aria-hidden="true">
+        <button class="btn btn--tertiary btn--narrow" disabled>
+          {% include 'icon-arrow-right' %}
+          <span class="icon__fallback-text">{{ 'general.pagination.next' | t }}</span>
+        </button>
+      </li>
+    {% else %}
+      <li>
+        <a href="{{ paginate.next.url }}" class="btn btn--tertiary btn--narrow">
+          {% include 'icon-arrow-right' %}
+          <span class="icon__fallback-text">{{ 'general.pagination.next' | t }}</span>
+        </a>
+      </li>
+    {% endunless %}
+</ul>
+{% endcomment %}
+
+<ul class="list--inline text-center">
+  {%- if paginate.previous-%}
+    <li>
+      <a href="{{ paginate.previous.url }}">
+        {% include 'icon-arrow-left' %}
+        <span class="icon__fallback-text">{{ 'general.pagination.previous' | t }}</span>
+      </a>
+    </li>
+  {%- else -%}
+    <li class="disabled">
+      <div>
+        {% include 'icon-arrow-left' %}
+        <span class="icon__fallback-text">{{ 'general.pagination.previous' | t }}</span>
+      </div>
+    </li>
+  {%- endif -%}
+
+  {%- for part in paginate.parts -%}
+    {%- if part.is_link -%}
+      <li>
+        <a href="{{ part.url }}">
+          <span class="visuallyhidden">page</span> 
+          <span>
+            {{ part.title }}
+          </span>
+        </a>
+      </li>
+    {%- else -%}
+      {%- if part.title == paginate.current_page -%}
+        <li class="active" aria-current="page">
+          <span class="visuallyhidden">page</span> 
+          <span>
+            {{ part.title }}
+          </span>
+        </li>
+      {%- else -%}
+        <li>
+          <span class="visuallyhidden">page</span>
+          <span>
+            {{ part.title }}
+          </span>
+        </li>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- if paginate.next -%}
+    <li>
+      <a href="{{ paginate.next.url }}">
+        {% include 'icon-arrow-right' %}
+        <span class="icon__fallback-text">{{ 'general.pagination.next' | t }}</span>
+      </a>
+    </li>
+  {%- else -%}
+    <li class="disabled">
+      <div>
+        {% include 'icon-arrow-right' %}
+        <span class="icon__fallback-text">{{ 'general.pagination.next' | t }}</span>
+      </div>
+    </li>
+  {%- endif -%}
+  
+
+  {%- if section.settings.show_view_all_button -%}
+    <li class="view-all-btn">
+      <a id="view-all-products-btn" href="#">View All</a>
+    </li>
+  {%- endif -%}
+
+</ul>
+
+<script>
+  $(function(){
+    $("#view-all-products-btn").click(function(){
+      CartJS.setAttribute("pagination",1000,{
+        "success": function(data, textStatus, jqXHR) {
+          window.slate.utils.saveCollectionSettings('viewAllClicked',true);
+          window.location.reload();
+        },
+        "error": function(jqXHR, textStatus, errorThrown) {
+          window.location.reload();
+        }
+      });
+    });
+  });
+</script>
+
+
+<style>
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
+</style>

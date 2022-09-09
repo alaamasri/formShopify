@@ -1,0 +1,127 @@
+<section class="home-product-features">
+  <div class="container">
+    <div class="row featured-line">
+       <div class="col-lg-6 col-md-6 col-xs-12 interactive-features">
+          <div class="wrapper">
+            {% for block in section.blocks %}
+              <div class="point {% if block.settings.featureDirection %}point-ltr{% endif %}" style="top: {{block.settings.featurePositionY}}% ;left: {{block.settings.featurePositionX}}%;"><span {% if block.settings.featureSpecialWidth %} style="min-width:{{ block.settings.featureSpecialWidth }}"{% endif %}>{{ block.settings.featureTitle }}</span></div>
+            {% endfor %}
+            <img src="{{ section.settings.featured_img | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.title }} {{ section.settings.tag }}">
+            
+          </div>
+        </div>
+        
+        <div class="col-lg-6 col-md-6 col-xs-12">
+          <div class="left featured-line-desc home-features-desc">
+            <h5>{{ section.settings.tag }}</h5>
+            <h2 class="home-main-h1"> {{ section.settings.title }}</h2>
+            <p> {{ section.settings.details }}</p>
+            {% if  section.settings.link %}
+            <a href="{{ section.settings.link }}" class="btn">
+              {{ section.settings.btn }}
+            </a>
+              {% endif %}
+          </div>
+        </div>
+        
+        <div class="clearfix"></div>
+      
+    </div>
+  </div>
+</section>
+
+
+{% schema %}
+  {
+    "name": "Home Product Features",
+    "settings": [
+	  {
+        "id": "featured_img",
+        "type": "image_picker",
+        "label": "Featured Image"
+      },
+      {
+        "id": "title",
+        "type": "text",
+        "label": "Title"
+      },
+      {
+        "id": "tag",
+        "type": "text",
+        "label": "Tag"
+      },
+      {
+        "id": "details",
+        "type": "textarea",
+        "label": "Details"
+      },  
+      {
+        "id": "btn",
+        "type": "text",
+        "label": "Button Label",
+        "default": "Shop Now"
+      },  
+      {
+        "id": "link",
+        "type": "url",
+        "label": "Button Link"
+      }
+	],
+  "blocks": [
+    {
+      "type": "repeat",
+      "name": "Feature Point",
+      "settings": [
+        {
+          "id": "featureTitle",
+          "type": "text",
+        "label": "Feature Title"
+        },
+    {
+          "id": "featurePositionX",
+          "type": "range",
+        "label": "feature Postion X %",
+        "min": 0,
+    "max": 100,
+    "step": 1,
+    "unit": "%",
+    "default":0
+        },
+        {
+          "id": "featurePositionY",
+          "type": "range",
+        "label": "feature Postion Y %",
+        "min": 0,
+    "max": 100,
+    "step": 1,
+    "unit": "%",
+    "default":0
+        },
+        {
+          "id": "featureDirection",
+          "type": "checkbox",
+        "label": "Expand to left?"
+        },
+      {
+          "id": "featureSpecialWidth",
+          "type": "text",
+        "label": "feature Special Width"
+        }
+      ]
+    }
+  ],
+
+    "presets": [
+      {
+        "name": "Home Product Features",
+        "category": "Custom"        
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

@@ -1,0 +1,168 @@
+{% assign checkcolor = false %}
+{% assign checksize = false %}
+
+{% for option in product.options_with_values %}
+  {% if option.name == 'Color' %}
+  	{% assign checkcolor = true %}
+  {% endif %}
+
+  {% if option.name == 'Size' %}
+  	{% assign checksize = true %}
+  {% endif %}
+{% endfor %}
+
+{%if shop.metafields.colors.collections %}
+	{%- assign colorsCollection = shop.metafields.colors.collections -%}
+{%endif%} 
+
+<div class="{{ grid_item_width }} col-md-4 col-sm-4 col-xs-6 mos-product-card asd">
+  <div class="collection_one_slid">
+    <div class="plp_image_main">
+      <div id="sh{{s}}" class="collection_img">
+        {% assign images = false %}
+	
+        <a href="{{ product.url | within: collection }}">
+          
+          <img  class="lazyload proimg" src="{{ product.featured_image.src | img_url:'grande', format: 'pjpg' }}" 
+               alt="{{ image.alt | escape }}"
+               />
+          {% for image in product.images %}
+          
+            {% for variant in image.variants %}
+              {% assign images = true %}	 
+
+              <img id="{{ variant.id }}"  data-option-1="{{variant.option1}}" data-option-2="{{variant.option2}}" class="lazyload proimg" src="{{ image.src | img_url:'grande', format: 'pjpg' }}" 
+                   
+                   data-alt="{{ image.alt | escape }}" alt="{{ product.title }} {{ product.type }}"/>
+
+            {% endfor %}
+
+            {% if forloop.last == true %}
+	            <div class="secimg" style="background:url({{ image.src | img_url:'grande', format: 'pjpg' }}) no-repeat"></div>
+            {% endif %}
+
+          {% endfor %}
+        </a>
+
+       
+      </div>
+      
+      <a href="{{ product.url | within: collection }}" class="home_product_img_hover one_main_hover">
+        SHOP NOW
+      </a>
+    </div>  
+    <div class="info">
+      <h4><a href="{{ product.url | within: collection }}">{{ product.title }} <span>{{ product.type }}</span></a></h4>
+    
+    <h5>{% include 'product-price', variant: product.selected_or_first_available_variant %}</h5>
+
+    <div id="sizz{{s}}" class="lrft colsize">                            
+      <div class="cart_size hide">
+        <form class="procart procart{{s}} hide" method="post" action="/cart/add">  
+          <input type="hidden" name="id" id="varid{{s}}" value="{{ product.variants.first.id }}" />
+          <select id="prosel{{s}}" class="hide">
+            {% for variant in product.variants %}      
+            <option  data-val="{{ variant.price | money }} {% if variant.compare_at_price > variant.price %}<s>{{ variant.compare_at_price | money }}</s>{% endif %}" value="{{ variant.id }}">{{ variant.title | handle }}</option>
+            {% endfor %}
+          </select>
+
+          <button type="submit">ADD TO CART</button>              
+          {% if checksize == true %}<span onclick="showsize({{s}})"><i class="fas fa-chevron-down"></i></span>{% endif %}
+        </form>
+      </div>
+
+      {% if checkcolor == true %}
+      <div class="swatch-title">Colors Available</div>
+      <div class="cart_size_in" id="showsize{{s}}">
+        <ul class="swSize swatch">
+          {% for option in product.options_with_values %}
+          {% if option.name == 'Color' %}
+          <script>
+            $(document).ready(function(){
+              {% if option.name == "Color" %}
+              $('#procol{{s}}').val('{{ value | handle }}');
+              {% endif %}
+              {% if option.name == "Size" %}
+                //$('#prosiz{{s}}').val('{{ value | handle }}');
+              {% endif %}
+            });
+          </script>
+          {% for value in option.values %}  
+          {% capture checksizelength %} {{ forloop.length }} {% endcapture %}
+          {% assign chksilen = checksizelength  | plus: 0 %}
+		  {%assign isColorImage=false%}
+          {%assign isMultiColor=false%}
+          {%assign colorOptionValue = value %}
+          
+          <!--Image & Multi Color Swatches conditions-->
+              {%if option.name == "Color" %}
+                {% for colorsItem in colorsCollection %}
+                  {%if colorsItem[0] == colorOptionValue %}
+	                  {%assign colorOptionValue = colorsItem[1] %}
+                  {%endif%}
+          		{% endfor %}
+          
+                {%assign isColorImage = colorOptionValue | split: "_" | first %}
+                {%if isColorImage == "img" %}
+                {%assign isColorImage=true%}
+                {%assign colorImage =colorOptionValue | split: "_" | last %}
+                {%else%}
+                {%assign isColorImage=false%}
+                {%endif%}
+
+                {%assign isMultiColor= colorOptionValue | split: "_" | last | split: "-" %}
+              {%endif%}
+          <!--Image & Multi Color Swatches conditions end-->
+          
+          {% if forloop.first %}
+          {% capture checksizefirstname %}{{ value | handle }}{% endcapture %}	
+          {% endif %}
+
+          <li class="color swatch-element {{ value | handle }}" onclick="getswval('{{ value | handle }}', {{s}}, {{forloop.index}}, 'Size', '{{ value }}')" data-value="{{ value | escape }}">
+            <!--<div class="tooltip">{{ value }}</div>-->
+            <input class="hide" data-value="{{swatch}}" id="swatch-{{ option_index }}-{{ value | handle }}" type="radio" name="option-{{ option_index }}" value="{{ value | escape }}" {% unless variant.available %}disabled{% endunless %} />
+            <label id="siz{{forloop.index}}{{s}}" class="swlabel  {%if isMultiColor.size>1%}lbl-multi-color{%endif%}" for="swatch-{{ option_index }}-{{ value | handle }}" {%if option.name == "Color" and isColorImage == false and isMultiColor.size <2 %}style="background:#{{colorOptionValue | split: "_" | last }}"{%elsif isColorImage == true%}style="background-image:url({{colorImage | append: '.jpg' | asset_img_url: '100x'}})"{%endif%}>
+             {%if isMultiColor.size>1 %}
+          		<span>
+          		{%for color in isMultiColor%}
+                <span style="background-color:#{{color}}"></span>
+          		{%endfor%}
+          		</span>
+          	  {%endif%}
+            </label>      
+
+            {% for variant in product.variants %} 
+            {% assign values = variant.options[0] %}
+
+            {% if values == value %}
+            <span class="hide">{{ variant.price | money }} {% if variant.compare_at_price > variant.price %}<s>{{ variant.compare_at_price | money }}</s>{% endif %}</span>      
+            {% endif %}
+            {% endfor %}
+          </li>
+          {% endfor %}
+
+          <input type="hidden" id="chksizlenth" value="{{chksilen}}" />
+          {% if chksilen == 1 %}
+          <script>
+            $(document).ready(function(){
+              $('#prosiz{{s}}').val('{{ checksizefirstname }}');
+
+                $('.procart{{s}}').find('button').show();
+                $('#selectsize{{s}}').hide();
+                });
+          </script>
+          {% endif %}
+
+          {% endif %}
+          {% endfor %}
+        </ul> 
+      </div>
+      {% endif %} 
+      
+      <input type="hidden" id="procol{{s}}" value="" />
+      <input type="hidden" id="prosiz{{s}}" value="" /> 
+    </div>
+    </div>
+   
+  </div>
+</div>

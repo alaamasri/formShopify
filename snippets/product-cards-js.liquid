@@ -1,0 +1,74 @@
+{% if template contains 'collection' or template contains 'product' %}
+<script>        
+  function getswval(para, ids, flid, type, varname) {  
+    if(type=="Color") {
+      $('#procol'+ids).val(para);
+
+      if($('#prosiz'+ids).val()) {
+        var sizcol = $('#prosiz'+ids).val()+'-'+$('#procol'+ids).val();
+      } else {
+        var sizcol = $('#procol'+ids).val();
+      }
+
+      //alert(sizcol.toString());
+      //alert($('#prosel'+ids).find("option:contains("+sizcol.toString()+")").val());
+
+      var sizei = $('#prosel'+ids).find("option:contains("+sizcol.toString()+")").val();
+      var sizeipri = $('#prosel'+ids).find("option:contains("+sizcol.toString()+")").data('val');
+
+      //$('#priprice'+ids).html(sizeipri);
+
+      $('#varid'+ids).val(sizei); 
+
+      if($('#sh'+ids+' #'+sizei).length == 0) {
+      } else {
+        $('#sh'+ids+' .proimg').hide();
+        $('#sh'+ids+' #'+sizei).show();
+      }
+
+      $('#colo'+ids+' .swlabel').removeClass('active');
+
+      $('#colo'+ids+' .swlabel').parents('li').css("box-shadow", "unset");
+      $('#col'+flid+ids).addClass('active');
+      $('#col'+flid+ids+'.active').parents('li').css("box-shadow", "0px 0px 2px #000");	
+    }
+    if(type=="Size") {
+      $('#sizeb'+ids).text(para);
+
+      $('#prosiz'+ids).val(para);
+
+      $('.procart'+ids).find('button').show();          
+
+      if($('#procol'+ids).val()) {
+        var sizcol = $('#prosiz'+ids).val()+'-'+$('#procol'+ids).val();
+      } else {
+        var sizcol = $('#prosiz'+ids).val();
+      }
+      //alert(sizcol.toString());
+      //alert($('#prosel'+ids).find("option:contains("+sizcol.toString()+")").val());
+
+      var sizei = $('#prosel'+ids).find("option:contains("+sizcol.toString()+")").val();
+
+      var sizeipri = $('#prosel'+ids).find("option:contains("+sizcol.toString()+")").data('val');                              
+
+      $('#priprice'+ids).html(sizeipri);
+
+      $('#varid'+ids).val(sizei); 
+
+      if($('#sh'+ids+' #'+sizei).length == 0) {
+      } else {
+        $('#sh'+ids+' .proimg').hide();
+
+        $('#sh'+ids+' #'+sizei).show();
+      }
+
+      $('#sizz'+ids+' .swlabel').removeClass('active');
+      $('#siz'+flid+ids).addClass('active');
+    } 
+  }  
+  
+  function showsize(si) {
+  	$('#showsize'+si).slideToggle();
+  }
+</script>
+{% endif %}

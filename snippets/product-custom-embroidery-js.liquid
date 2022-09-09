@@ -1,0 +1,922 @@
+{%if product.metafields.embroidery != null and product.metafields.embroidery.enabled %}
+
+{%if product.metafields.embroidery.pricingProduct %}
+{% assign custom_embroidery_product = all_products[product.metafields.embroidery.pricingProduct] %}
+{%endif%}
+
+{% assign main_product_selected_variant = product.selected_or_first_available_variant %}
+
+{%if main_product_selected_variant != null and main_product_selected_variant.metafields.embroidery != null %}
+  {%if main_product_selected_variant.metafields.embroidery.variantImgFront != null and main_product_selected_variant.metafields.embroidery.enableFrontImage %}
+	{% assign embroider_img_front = main_product_selected_variant.metafields.embroidery.variantImgFront %}
+  {%else%} 
+	{% assign embroider_img_front = product.metafields.embroidery.defaultProductImgFront %}
+  {%endif%}
+
+  {%if main_product_selected_variant.metafields.embroidery.variantImgBack != null and main_product_selected_variant.metafields.embroidery.enableBackImage %}
+	{% assign embroider_img_back = main_product_selected_variant.metafields.embroidery.variantImgBack %}
+  {%else%} 
+	{% assign embroider_img_back = product.metafields.embroidery.defaultProductImgBack %}
+  {%endif%}
+
+  {% assign embroider_default_img_front = product.metafields.embroidery.defaultProductImgFront | split: 'assets/'| last | split: '?'| first | asset_url %}
+  {% assign embroider_default_img_back = product.metafields.embroidery.defaultProductImgBack | split: 'assets/'| last | split: '?'| first | asset_url %}
+
+  {% assign embroider_img_front_url = embroider_img_front | split: 'assets/'| last | split: '?'| first | asset_url%}
+  {% assign embroider_img_back_url = embroider_img_back | split: 'assets/'| last | split: '?'| first | asset_url%}
+
+{%endif%}
+
+{%if product.metafields.embroidery.productType == "FULL APRON" or  product.metafields.embroidery.productType == "HALF APRON"%}
+	{% assign has_back_view = false %}
+{%else%} 
+	{% assign has_back_view = true %}
+{%endif%}
+
+<script>
+  function imageExists(image_url){
+      var http = new XMLHttpRequest();
+      http.open('HEAD', image_url, false);
+      http.send();
+      return http.status != 404;
+  }
+  
+  {% if custom_embroidery_product %}
+    window.custom_embroidery_product_obj ={{custom_embroidery_product | json}};
+    window.custom_embroidery_product = {
+      id: '{{custom_embroidery_product.id}}',
+      variant_id: '{{custom_embroidery_product.selected_or_first_available_variant.id}}',
+      price: '{{custom_embroidery_product.price | divided_by: 100}}',
+      price_with_currency: '{{custom_embroidery_product.price | money_with_currency }}',
+      variants: window.custom_embroidery_product_obj.variants
+    };
+
+	window.addEventListener('variantChange', function (event) {
+		if(event && event.detail && event.detail.variant){
+          var selected_variant = event.detail.variant;
+          if(selected_variant && selected_variant.id && window.productContext.variants && window.productContext.variants[selected_variant.id]){
+            var front_img = window.productContext.variants[selected_variant.id].front.url;
+            var front_img_enabled = window.productContext.variants[selected_variant.id].front.enabled;
+            if(front_img_enabled && front_img){
+              $('.embroidery-container__variant-img--front').attr('src', front_img);
+            }else{
+              $('.embroidery-container__variant-img--front').attr('src', window.embroidery_context.embroidery_default_images.front);
+            }
+            
+            var back_img = window.productContext.variants[selected_variant.id].back.url;
+            var back_img_enabled = window.productContext.variants[selected_variant.id].back.enabled;
+            if(back_img_enabled && back_img){
+              $('.embroidery-container__variant-img--back').attr('src', back_img);
+            }else{
+              $('.embroidery-container__variant-img--back').attr('src', window.embroidery_context.embroidery_default_images.back);
+            }
+          }else{
+            $('.embroidery-container__variant-img--front').attr('src', window.embroidery_context.embroidery_default_images.front);
+            $('.embroidery-container__variant-img--back').attr('src', window.embroidery_context.embroidery_default_images.back);
+          }
+		}
+    }, false);
+  
+  	window.addEventListener('addedToCart', function (event) {
+		if(event && event.detail && event.detail.item){      	
+          removeEmp();
+		}
+    }, false);
+  
+    window.embroidery_context = {
+      main_product_price: '{{main_product_selected_variant.price | divided_by: 100}}',
+      product_type : '{{product.metafields.embroidery.productType}}',
+      embroidery_default_images : {
+	      front: '{{embroider_default_img_front}}' || "",
+    	  back: '{{embroider_default_img_back}}' || "",
+      },
+      embroidery_images:{
+        front: '{{embroider_img_front}}',
+        back: '{{embroider_img_back}}'
+      },
+      has_back_view: {{has_back_view}},
+      available_text_placements: '{{product.metafields.embroidery.textPlacement}}',
+      available_logo_placements: '{{product.metafields.embroidery.logoPlacement}}',
+      embroidery_selected_variant_id: null,
+      uploadedLogoImage: null,
+      embroidery_prices_list: {},
+      sections: {
+        embroidery_text_section : {
+        enabled: false,
+        fields : [],
+        numberOfTextLines: 0
+       },
+		embroidery_logo_section :  {
+        enabled: false,
+        fields : []
+       }
+  	  }
+    };
+  
+	//setup embroidery image
+    if(!imageExists(window.embroidery_context.embroidery_images.front)){
+      window.embroidery_context.embroidery_images.front = '{{embroider_img_front_url}}';
+    }
+
+  
+    if(!imageExists(window.embroidery_context.embroidery_images.front)){
+      window.embroidery_context.embroidery_images.back = '{{embroider_img_back_url}}';
+    }
+  
+  {% endif %}
+  
+  //get line price, and logo price separately
+  if(window.custom_embroidery_product && window.custom_embroidery_product.variants && window.custom_embroidery_product.variants.length > 0){
+    var custom_emb_variants = window.custom_embroidery_product.variants;
+    for(var i = 0 ; i < custom_emb_variants.length; i++){
+      var _variant = custom_emb_variants[i];
+      var _linesOption = _variant.option1.split("-");
+      var _logoOption = _variant.option2.split("-");
+      
+      var _numberOfLines = _linesOption[0];
+      var _hasLogo = _logoOption[0].toLowerCase() === 'with';
+      
+      var _optionPrice = custom_emb_variants[i].price
+      
+      //prices without logo
+      if(!_hasLogo){
+        if(_linesOption[0] == "1"){
+          window.embroidery_context.linePrice = (_optionPrice / 100).toFixed(2);
+          window.embroidery_context.embroidery_prices_list['1-line'] = {
+            price: (_optionPrice / 100).toFixed(2),
+            variant_id: _variant.id
+          }
+        }
+        
+        if(_linesOption[0] == "2"){
+          window.embroidery_context.linePrice = (_optionPrice / 100).toFixed(2);
+          window.embroidery_context.embroidery_prices_list['2-line'] = {
+            price: (_optionPrice / 100).toFixed(2),
+            variant_id: _variant.id
+          }
+        }
+        
+        if(_linesOption[0] == "3"){
+          window.embroidery_context.linePrice = (_optionPrice / 100).toFixed(2);
+          window.embroidery_context.embroidery_prices_list['3-line'] = {
+            price: (_optionPrice / 100).toFixed(2),
+            variant_id: _variant.id
+          }
+        }
+      }else{
+		//prices with logo
+        
+        //logo price without line
+        if(_linesOption[0] == "0"){
+          window.embroidery_context.logoPrice = (_optionPrice / 100).toFixed(2);
+          window.embroidery_context.embroidery_prices_list['logo'] = {
+            price: (_optionPrice / 100).toFixed(2),
+            variant_id: _variant.id
+          }
+        }
+        
+        //logo price 1-line
+        if(_linesOption[0] == "1"){
+          window.embroidery_context.logoPrice = (_optionPrice / 100).toFixed(2);
+          window.embroidery_context.embroidery_prices_list['1-line_logo'] = {
+            price: (_optionPrice / 100).toFixed(2),
+            variant_id: _variant.id
+          }
+        }
+        
+        //logo price 2-line
+        if(_linesOption[0] == "2"){
+          window.embroidery_context.logoPrice = (_optionPrice / 100).toFixed(2);
+          window.embroidery_context.embroidery_prices_list['2-line_logo'] = {
+            price: (_optionPrice / 100).toFixed(2),
+            variant_id: _variant.id
+          }
+        }
+        
+        //logo price 3-line
+        if(_linesOption[0] == "3"){
+          window.embroidery_context.logoPrice = (_optionPrice / 100).toFixed(2);
+          window.embroidery_context.embroidery_prices_list['3-line_logo'] = {
+            price: (_optionPrice / 100).toFixed(2),
+            variant_id: _variant.id
+          }
+        }
+      }
+    
+    }
+  }
+  
+  
+  function embPop() {
+    $('.emb-pop').show();
+  }
+  
+  function changeView(type){
+      $('.embroidery-container__variant-img').addClass('hidden');
+      
+      if(type === 'front'){
+        $('.embroidery-container__variant-img--front').removeClass('hidden');
+      }else {
+        $('.embroidery-container__variant-img--back').removeClass('hidden');
+      }
+  }
+
+  function getMatchingEmbroideryVariant(){
+    var selectedEmbroideryPriceListKey = null;
+    var selectedEmbroideryPriceList = null;
+    
+	if(!(window.embroidery_context.sections.embroidery_text_section.enabled || window.embroidery_context.sections.embroidery_logo_section.enabled)){
+		return;
+    }
+    
+    if(window.embroidery_context.sections.embroidery_text_section.enabled){
+      var numberOfTextLines = window.embroidery_context.sections.embroidery_text_section.numberOfTextLines;
+      selectedEmbroideryPriceListKey = numberOfTextLines.toString() + "-line";
+    }
+    
+    if(window.embroidery_context.sections.embroidery_logo_section.enabled){
+      if(selectedEmbroideryPriceListKey == null){
+        selectedEmbroideryPriceListKey = "logo";
+      }else {
+        selectedEmbroideryPriceListKey = selectedEmbroideryPriceListKey + "_logo";
+      }
+    }
+    
+    if(selectedEmbroideryPriceListKey){
+      selectedEmbroideryPriceList= window.embroidery_context.embroidery_prices_list[selectedEmbroideryPriceListKey];
+    }
+    
+    return selectedEmbroideryPriceList;
+  }; 
+  
+  function checkPrice(){
+    var selectedEmbroideryPriceList = getMatchingEmbroideryVariant();
+    if(selectedEmbroideryPriceList && selectedEmbroideryPriceList.price){
+      $('[data-embroidery-price]').text(selectedEmbroideryPriceList.price);
+      var totalPrice = parseFloat(window.embroidery_context.main_product_price) + parseFloat(selectedEmbroideryPriceList.price);
+      $('[data-embroidery-product-total-price]').text(totalPrice.toFixed(2));
+    }else {
+	  $('[data-embroidery-price]').text("0");
+      $('[data-embroidery-product-total-price]').text(window.embroidery_context.main_product_price);
+    }
+  };
+  
+  function attachFormItems(){
+    var embroidery_items = [];
+    var selectedEmbroideryPriceListKey = null;
+    var selectedEmbroideryPriceList = getMatchingEmbroideryVariant();
+    
+	if(!(window.embroidery_context.sections.embroidery_text_section.enabled || window.embroidery_context.sections.embroidery_logo_section.enabled)){
+      	removeEmp();
+		return;
+    }
+    
+	changeToEditBtn();
+    
+    if(window.embroidery_context.sections.embroidery_text_section.enabled){
+      embroidery_items = embroidery_items.concat(window.embroidery_context.sections.embroidery_text_section.fields);
+    }
+    
+    if(window.embroidery_context.sections.embroidery_logo_section.enabled){
+      embroidery_items = embroidery_items.concat(window.embroidery_context.sections.embroidery_logo_section.fields);
+    }
+    
+    if(!selectedEmbroideryPriceList){
+      console.error('no matching embroidery variant');
+      return;
+    }
+    
+    //Get the right embroidery variant id
+    if(embroidery_items.length > 0){
+      $('.product-form-product-template').attr('data-embroidery-variant_id', selectedEmbroideryPriceList.variant_id);
+      $('.product-form-product-template').attr('data-embroidery-items', JSON.stringify(embroidery_items));
+      $('.product-form-product-template').attr('data-has-embroidery', true);
+    }
+  };
+  
+  function detachFormItems(){
+    $('.product-form-product-template').removeAttr('data-embroidery-items');
+    $('.product-form-product-template').removeAttr('data-has-embroidery');
+    $('.product-form-product-template').removeAttr('data-embroidery-variant_id');
+  };
+  
+  function changeToEditBtn(){
+  	$('.emb-add-btn').addClass('hidden');
+    $('.emb-edit-btn').removeClass('hidden');
+  }
+  
+  function submitEmb() {
+    attachFormItems();
+    embPopHide();
+  }
+  
+  function embPopHide() {
+    $('.emb-pop').hide();
+    changeView('front');
+  }
+  
+  function removeEmp(event) {
+    if(event){
+      event.stopPropagation();
+    }
+    resetSection('embroidery-text');
+	resetSection('embroidery-logo');
+    detachFormItems();
+    $('.emb-edit-btn').addClass('hidden');
+    $('.emb-add-btn').removeClass('hidden');
+    changeView('front');
+  }
+  
+  function addLine() {
+    if($('.custom-embroidery-form__item--line-text-2').hasClass('hidden')){
+      $('.custom-embroidery-form__item--line-text-2').removeClass('hidden');
+      return;
+    }
+    
+    if($('.custom-embroidery-form__item--line-text-3').hasClass('hidden')){
+      $('.custom-embroidery-form__item--line-text-3').removeClass('hidden');
+      return;
+    }
+  }
+  
+  function saveSection(section) {
+    if(section === 'embroidery-text'){
+      window.embroidery_context.sections.embroidery_text_section.enabled = true;
+      window.embroidery_context.sections.embroidery_text_section.fields = [];
+      //Line 1
+      if($('.custom-embroidery-form--text .custom-embroidery-form__item--line-text-1 [data-embroidery-field]').val()){
+        window.embroidery_context.sections.embroidery_text_section.fields.push({
+          type: "text",
+          key: $('.custom-embroidery-form--text .custom-embroidery-form__item--line-text-1 [data-embroidery-field]').attr('name'),
+          value: $('.custom-embroidery-form--text .custom-embroidery-form__item--line-text-1 [data-embroidery-field]').val()
+        });
+        
+        window.embroidery_context.sections.embroidery_text_section.numberOfTextLines = 1;
+      }
+      //Line 2
+      if($('.custom-embroidery-form--text .custom-embroidery-form__item--line-text-2 [data-embroidery-field]').val()){
+        window.embroidery_context.sections.embroidery_text_section.fields.push({
+          type: "text",
+          key: $('.custom-embroidery-form--text .custom-embroidery-form__item--line-text-2 [data-embroidery-field]').attr('name'),
+          value: $('.custom-embroidery-form--text .custom-embroidery-form__item--line-text-2 [data-embroidery-field]').val()
+        });
+        
+        window.embroidery_context.sections.embroidery_text_section.numberOfTextLines = 2;
+      }
+      //Line 3
+      if($('.custom-embroidery-form--text .custom-embroidery-form__item--line-text-3 [data-embroidery-field]').val()){
+        window.embroidery_context.sections.embroidery_text_section.fields.push({
+          type: "text",
+          key: $('.custom-embroidery-form--text .custom-embroidery-form__item--line-text-3 [data-embroidery-field]').attr('name'),
+          value: $('.custom-embroidery-form--text .custom-embroidery-form__item--line-text-3 [data-embroidery-field]').val()
+        });
+        
+        window.embroidery_context.sections.embroidery_text_section.numberOfTextLines = 3;
+      }
+      
+      //FONT
+      window.embroidery_context.sections.embroidery_text_section.fields.push({
+        type: "text",
+        key: $('.custom-embroidery-form--text .custom-embroidery-form__item--font [data-embroidery-field]:checked').attr('name'),
+        value: $('.custom-embroidery-form--text .custom-embroidery-form__item--font [data-embroidery-field]:checked').val()
+      });
+      
+      //Text Placement
+      window.embroidery_context.sections.embroidery_text_section.fields.push({
+        type: "text",
+        key: $('.custom-embroidery-form--text .custom-embroidery-form__item--text-placement [data-embroidery-field]').attr('name'),
+        value: $('.custom-embroidery-form--text .custom-embroidery-form__item--text-placement [data-embroidery-field]').val()
+      });
+      
+	  //Text Colors
+      window.embroidery_context.sections.embroidery_text_section.fields.push({
+        type: "text",
+        key: $('.custom-embroidery-form--text .custom-embroidery-form__item--text-colors [data-embroidery-field]:checked').attr('name'),
+        value: $('.custom-embroidery-form--text .custom-embroidery-form__item--text-colors [data-embroidery-field]:checked').val()
+      });
+      
+      $('.custom-embroidery-form--text.tab-item').removeClass("active");
+      
+    }else if(section === 'embroidery-logo'){
+      window.embroidery_context.sections.embroidery_logo_section.enabled = true;
+      window.embroidery_context.sections.embroidery_logo_section.fields = [];
+      
+      //Logo Image
+      window.embroidery_context.sections.embroidery_logo_section.fields.push({
+        type: "file",
+        key: $('.custom-embroidery-form--logo .custom-embroidery-form__item--logo-file [data-embroidery-field]').attr('name'),
+        value: $('.custom-embroidery-form--logo .custom-embroidery-form__item--logo-file [data-embroidery-field]').val()
+      });
+      
+      if($('.custom-embroidery-form--logo .custom-embroidery-form__item--logo-file [data-embroidery-field]')[0] && $('.custom-embroidery-form--logo .custom-embroidery-form__item--logo-file [data-embroidery-field]')[0].files && $('.custom-embroidery-form--logo .custom-embroidery-form__item--logo-file [data-embroidery-field]')[0].files.length > 0){
+        window.embroidery_context.uploadedLogoImage = $('.custom-embroidery-form--logo .custom-embroidery-form__item--logo-file [data-embroidery-field]')[0].files[0];
+      }
+      
+      //Logo Placement
+      window.embroidery_context.sections.embroidery_logo_section.fields.push({
+        type: "text",
+        key: $('.custom-embroidery-form--logo .custom-embroidery-form__item--logo-placement [data-embroidery-field]').attr('name'),
+        value: $('.custom-embroidery-form--logo .custom-embroidery-form__item--logo-placement [data-embroidery-field]').val()
+      });
+      
+      $('.custom-embroidery-form--logo.tab-item').removeClass("active");
+    }
+    
+    checkPrice();
+  }
+  
+  function resetSection(section) {
+	if(section === 'embroidery-text'){
+      window.embroidery_context.sections.embroidery_text_section.enabled = false;
+      window.embroidery_context.sections.embroidery_text_section.fields = [];
+      window.embroidery_context.sections.embroidery_text_section.numberOfTextLines = 0;
+      
+      //text input reset
+	  $('.custom-embroidery-form--text .custom-embroidery-form__item input[type="text"][data-embroidery-field]').val("").trigger("keyup");
+      $('.custom-embroidery-form__item--line-text-2').addClass('hidden');
+      $('.custom-embroidery-form__item--line-text-3').addClass('hidden');
+      
+      //font input reset
+	  $('.custom-embroidery-form__radio-list__item.font-list__item [data-embroidery-field]:first').prop("checked", true).trigger("change");
+
+      //text placement input reset
+      var firtAvailablePlacementOptionValue = $('.custom-embroidery-form__item.custom-embroidery-form__item--text-placement [data-embroidery-field] option:not(.hidden):first').val();
+	  $('.custom-embroidery-form__item.custom-embroidery-form__item--text-placement [data-embroidery-field]').val(firtAvailablePlacementOptionValue).trigger("change");
+      
+      //color input reset
+      $('.custom-embroidery-form__radio-list__item.color-list__item [data-embroidery-field]:first').prop("checked", true).trigger("change");
+    }else if(section === 'embroidery-logo'){
+
+      //logo placement input reset
+      var firtAvailableLogoPlacementOptionValue = $('.custom-embroidery-form__item.custom-embroidery-form__item--logo-placement [data-embroidery-field] option:not(.hidden):first').val();
+	  $('.custom-embroidery-form__item.custom-embroidery-form__item--logo-placement [data-embroidery-field]').val(firtAvailableLogoPlacementOptionValue).trigger("change");
+      
+      window.embroidery_context.sections.embroidery_logo_section.enabled = false;
+      window.embroidery_context.sections.embroidery_logo_section.fields = [];
+      window.embroidery_context.uploadedLogoImage = null;
+      removeSelectedFile();
+    }
+    
+    checkPrice();
+  }
+  
+  function removeSelectedFile(){
+    $(".custom-embroidery-form__item.custom-embroidery-form__item--logo-file [data-embroidery-field]").val('').trigger("change");
+  }
+  
+  function deleteLine(lineNumber){
+    $('.custom-embroidery-form__item--line-text-' + lineNumber).addClass('hidden');
+    $('.custom-embroidery-form__item--line-text-' + lineNumber + ' [data-embroidery-field]').val('').trigger('keyup');
+  }
+  
+  $(function () {
+    $('[data-embroidery-main-product-price] , [data-embroidery-product-total-price]').text(window.embroidery_context.main_product_price);
+    
+    $('#embroidery-line-1,#embroidery-line-2,#embroidery-line-3').keyup(function() { 
+      var embroideredText=$('#embroidery-line-1').val();
+      if($('#embroidery-line-2').val()!=0){
+        embroideredText+='<br>'+$('#embroidery-line-2').val();
+      }
+      
+      if($('#embroidery-line-3').val()!=0){
+        embroideredText+='<br>'+$('#embroidery-line-3').val();
+      }
+      $('.emb').html(embroideredText);
+    });
+    
+    $('input[name=Font]').change(function() {
+      if($(this).val()!=0){
+        $('.emb').css('font-family',$(this).val())
+      }
+    });
+    
+    $('input[name=Color]').change(function() { 
+      if($(this).val()!=0){
+        $('.emb').css({'color':''});
+        $('.emb').css({'background':''});
+        if($(this).siblings('label').attr('data-gradient')==null){
+          $('.emb').css({'color':$(this).siblings('label').css('background-color')}).removeClass('emb_gradient')
+        }
+        else{
+          $('.emb').css('background',$(this).siblings('label').attr('data-gradient')).addClass('emb_gradient')
+        }
+      }
+    });
+    
+    $('.custom-embroidery-form__item--text-placement select').change(function() { 
+      if($(this).val() !=0){
+        if($('.emb').hasClass('emb_gradient')){
+          $('.emb').attr('class','emb emb_gradient '+ $(this).val().toLowerCase().split(' ').join('_'));
+        }
+        else {
+          $('.emb').attr('class','emb '+ $(this).val().toLowerCase().split(' ').join('_'));
+        }
+      }
+    });
+    
+    $('input[name=Color]').change(function() { 
+      if($(this).val()!=0){
+        $('.emb').css({'color':''});
+        $('.emb').css({'background':''});
+        if($(this).siblings('label').attr('data-gradient')==null){
+          $('.emb').css({'color':$(this).siblings('label').css('background-color')}).removeClass('emb_gradient')
+        }
+        else{
+          $('.emb').css('background',$(this).siblings('label').attr('data-gradient')).addClass('emb_gradient')
+        }
+      }
+    });
+    
+    $('.custom-embroidery-form__item.custom-embroidery-form__item--logo-file [data-embroidery-field]').change(function() { 
+      if($(this).val()){
+        $('.product-form__input-delete').removeClass('hidden');
+      }else {
+        $('.product-form__input-delete').addClass('hidden');
+      }
+      
+      $('.custom-embroidery-form__item--logo-placement [data-embroidery-field]').trigger("change");
+    });
+    
+    $('.custom-embroidery-form__item--logo-placement [data-embroidery-field]').change(function() { 
+
+      var hasFile = $('.custom-embroidery-form__item.custom-embroidery-form__item--logo-file [data-embroidery-field]').val();
+      if(hasFile && $(this).val()!=0){
+        $('.emb_logo').show();
+        $('.emb_logo').attr('class','emb_logo ' + $(this).val().toLowerCase().split(' ').join('_'));
+      }else {
+        $('.emb_logo').hide();
+      }
+    });
+    
+    $('.custom-embroidery-form.custom-embroidery-form--text.tab-item .tab-title').click(function(){
+      $(this).parent('.tab-item').find('.tab-content').scrollTop(0);
+    });
+    
+    if(window.embroidery_context){
+      //set front embroidery image  
+  	  $('.embroidery-container__variant-img--front').attr('src', window.embroidery_context.embroidery_images.front);
+      //set back embroidery image
+	  $('.embroidery-container__variant-img--back').attr('src', window.embroidery_context.embroidery_images.back);
+      
+      //show selected text placements
+      if(window.embroidery_context.available_text_placements){
+        window.embroidery_context.available_text_placements = window.embroidery_context.available_text_placements.split('|');
+        if(window.embroidery_context.available_text_placements && window.embroidery_context.available_text_placements.length > 0){
+          $('.custom-embroidery-form__item--text-placement .custom-embroidery-form__input option').addClass('hidden');
+
+          for(var i = 0 ; i < window.embroidery_context.available_text_placements.length; i++){
+            var _placementItem = window.embroidery_context.available_text_placements[i];
+            $('.custom-embroidery-form__item--text-placement .custom-embroidery-form__input option[data-id="'+ _placementItem.toUpperCase() +'"]').removeClass('hidden');
+          }
+          
+          if($('.custom-embroidery-form__item--text-placement .custom-embroidery-form__input option.hidden').length > 0){
+		  	$('.custom-embroidery-form__item--text-placement .custom-embroidery-form__input option.hidden').remove();
+          }
+        }
+
+      }
+      
+      //show selected logo placements
+      if(window.embroidery_context.available_logo_placements){
+        window.embroidery_context.available_logo_placements = window.embroidery_context.available_logo_placements.split('|');
+        if(window.embroidery_context.available_logo_placements && window.embroidery_context.available_logo_placements.length > 0){
+          $('.custom-embroidery-form__item--logo-placement .custom-embroidery-form__input option').addClass('hidden');
+
+          for(var i = 0 ; i < window.embroidery_context.available_logo_placements.length; i++){
+            var _placementItem = window.embroidery_context.available_logo_placements[i];
+            $('.custom-embroidery-form__item--logo-placement .custom-embroidery-form__input option[data-id="'+ _placementItem.toUpperCase() +'"]').removeClass('hidden');
+          }
+          
+          if($('.custom-embroidery-form__item--logo-placement .custom-embroidery-form__input option.hidden').length){
+            $('.custom-embroidery-form__item--logo-placement .custom-embroidery-form__input option.hidden').remove()
+          }
+        }
+
+      }
+      
+      //add product type class
+      if(window.embroidery_context.product_type){
+        var _product_type = window.embroidery_context.product_type.replace(" ","-").toLowerCase();
+        $('.embroidery-container').addClass('product-type-' + _product_type);
+      }
+      
+      $("[data-line-price]").text(window.embroidery_context.embroidery_prices_list['1-line'].price);
+	  $("[data-logo-price]").text(window.embroidery_context.embroidery_prices_list['logo'].price);
+      
+      if(window.embroidery_context.has_back_view){
+		$('.embroidery-container__view-btn--back').removeClass('hidden');
+      }else {
+		$('.embroidery-container__view-btn--back').addClass('hidden');
+      }
+      
+      var has_embroidery = $('.product-form-product-template').attr('data-has-embroidery');
+      if(!has_embroidery){
+        //show initial state text
+        $('.custom-embroidery-form__radio-list__item.font-list__item [data-embroidery-field]:first').prop("checked", true).trigger("change");
+        var firtAvailablePlacementOptionValue = $('.custom-embroidery-form__item.custom-embroidery-form__item--text-placement [data-embroidery-field] option:not(.hidden):first').val();
+		$('.custom-embroidery-form__item.custom-embroidery-form__item--text-placement [data-embroidery-field]').val(firtAvailablePlacementOptionValue).trigger("change");
+        $('.custom-embroidery-form__radio-list__item.color-list__item [data-embroidery-field]:first').prop("checked", true).trigger("change");
+        
+		//show initial state logo
+      	var firtAvailableLogoPlacementOptionValue = $('.custom-embroidery-form__item.custom-embroidery-form__item--logo-placement [data-embroidery-field] option:not(.hidden):first').val();
+	  	$('.custom-embroidery-form__item.custom-embroidery-form__item--logo-placement [data-embroidery-field]').val(firtAvailableLogoPlacementOptionValue).trigger("change");
+      }
+    }
+    
+    
+  });
+</script>
+<div class="emb-pop embroidery-container" style="display:none;">
+    
+    <div class="embroidery-container__wrapper">
+      <div onclick="embPopHide()" class="emb-hide">{%include 'icon-close'%}</div>
+        <div class="embroidery-container__left">
+          <div class="emb"></div>
+          <div class="emb_logo" class="display:none;">
+            <img src="{{ 'circle-logo-icon.png' | asset_url }}"/></div>
+            <!--Product varient img-->
+            <img class="embroidery-container__variant-img embroidery-container__variant-img--front"
+                src="" />
+            <img class="embroidery-container__variant-img embroidery-container__variant-img--back hidden"
+                src="" />
+
+            <span class="embroidery-container__emp-preview"></span>
+
+            <div class="embroidery-container__view-actions">
+                <button type="button" onclick="changeView('front')"
+                    class="btn embroidery-container__view-btn embroidery-container__view-btn--front">Front</button>
+
+                <button type="button" onclick="changeView('back')"
+                    class="btn embroidery-container__view-btn embroidery-container__view-btn--back">Back</button>
+            </div>
+        </div>
+        <div class="embroidery-container__right emb-tabs">
+            <div class="custom-embroidery-form custom-embroidery-form--text tab-item active">
+                <div class="tab-title">Embroidered Text</div>
+                <div class="tab-content">
+                  <div class="custom-embroidery-form__item custom-embroidery-form__item--line-text custom-embroidery-form__item--line-text-1">
+                      <label for="Text Line 1">Text</label>
+                      <input data-embroidery-field type="text" id="embroidery-line-1" name="Text Line 1" maxlength="20"
+                          class="custom-embroidery-form__item--emb-text" placeholder="Line" required>
+                      <div class="custom-emb-price">+ $<span data-line-price></span></div>
+                  </div>
+                  
+                  <div class="custom-embroidery-form__item custom-embroidery-form__item--line-text custom-embroidery-form__item--line-text-2 hidden">
+                      <label for="Text Line 2">Text</label>
+                      <div class="custom-embroidery-form__text-container">
+						<input data-embroidery-field type="text" id="embroidery-line-2" name="Text Line 2" maxlength="20"
+                          class="custom-embroidery-form__item--emb-text" placeholder="Line" required>
+	                  	<span onclick="deleteLine('2')" class="custom-embroidery-form__delete-text-btn">{%include 'icon-close'%}</span>
+                      	<div class="custom-emb-price">+ $<span data-line-price></span></div>
+                      </div>
+                  </div>
+                  
+                  <div class="custom-embroidery-form__item custom-embroidery-form__item--line-text custom-embroidery-form__item--line-text-3 hidden">
+                      <label for="Text Line 3">Text</label>
+                      <div class="custom-embroidery-form__text-container">
+                        <input data-embroidery-field type="text" id="embroidery-line-3" name="Text Line 3" maxlength="20"
+                            class="custom-embroidery-form__item--emb-text" placeholder="Line" required>
+                        <span onclick="deleteLine('3')" class="custom-embroidery-form__delete-text-btn">{%include 'icon-close'%}</span>
+                        <div class="custom-emb-price">+ $<span data-line-price></span></div>
+	                  </div>
+                  </div>
+
+                  <a onclick="addLine()" id="add-emb-line-btn">+ ADD LINE</a>
+
+                  <div class="custom-embroidery-form__item custom-embroidery-form__item--font">
+                      <label>Font</label>
+                          <div class="custom-embroidery-form__radio-list font-list">
+                              <div class="custom-embroidery-form__radio-list__item font-list__item">
+                                  <input data-embroidery-field id="font-6" type="radio" name="Font" value="Bodoni BE">
+                                  <label for="font-6" style="font-family:Bodoni BE;">Bodoni BE</label>
+                              </div>
+                              <div class="custom-embroidery-form__radio-list__item font-list__item">
+                                  <input data-embroidery-field id="font-1" type="radio" name="Font" value="BanglaMN">
+                                  <label for="font-1" style="font-family:BanglaMN;line-height:25px;">BanglaMN</label>
+                              </div>
+                              <div class="custom-embroidery-form__radio-list__item font-list__item">
+                                  <input data-embroidery-field id="font-11" type="radio" name="Font" value="Arial">
+                                  <label for="font-11" style="font-family:Arial;font-size:15px;line-height:20px">Arial</label>
+                              </div>
+                              <div class="custom-embroidery-form__radio-list__item font-list__item">
+                                  <input data-embroidery-field id="font-8" type="radio" name="Font" value="Orator Std">
+                                  <label for="font-8" style="font-family:Orator Std;">Orator Std</label>
+                              </div>
+                              <div class="custom-embroidery-form__radio-list__item font-list__item">
+                                  <input data-embroidery-field id="font-4" type="radio" name="Font" value="Lucida Calligraphy">
+                                  <label for="font-4" style="font-family:Lucida Calligraphy;">Lucida Calligraphy</label>
+                              </div>
+                              <div class="custom-embroidery-form__radio-list__item font-list__item">
+                                  <input data-embroidery-field id="font-2" type="radio" name="Font" value="Apple Chancery">
+                                  <label for="font-2" style="font-family:Apple Chancery;">Apple Chancery</label>
+                              </div>
+                              <div class="custom-embroidery-form__radio-list__item font-list__item">
+                                  <input data-embroidery-field id="font-7" type="radio" name="Font" value="Beautiful Heart">
+                                  <label for="font-7" style="font-family:Beautiful Heart;">Beautiful Heart</label>
+                              </div>
+                              <div class="custom-embroidery-form__radio-list__item font-list__item">
+                                  <input data-embroidery-field id="font-5" type="radio" name="Font" value="Brush Script MT">
+                                  <label for="font-5" style="font-family:Brush Script MT;">Brush Script MT</label>
+                              </div>
+                              <!--<div class="custom-embroidery-form__radio-list__item font-list__item">
+                                  <input data-embroidery-field id="font-9" type="radio" name="Font" value="Mistral">
+                                  <label for="font-9" style="font-family:Mistral;">Mistral</label>
+                              </div>-->
+							  <!--<div class="custom-embroidery-form__radio-list__item font-list__item">
+                                  <input data-embroidery-field id="font-10" type="radio" name="Font" value="Anthoni Signature">
+                                  <label for="font-10" style="font-family:Anthoni Signature;font-size:10px;line-height:20px">Anthoni Signature</label>
+                              </div>-->
+                          </div>
+                  </div>
+
+                  <div class="custom-embroidery-form__item custom-embroidery-form__item--text-placement">
+                      <label>Text Placement</label>
+                      <select data-embroidery-field class="custom-embroidery-form__input" name="Text Placement">
+                          <option value="">Select</option>
+                          <option data-id="RIGHT HIP" value="RIGHT HIP">RIGHT HIP</option>
+                          <option data-id="LEFT HIP" value="LEFT HIP">LEFT HIP</option>
+                          <option data-id="RIGHT BOTTOM" value="RIGHT BOTTOM">RIGHT BOTTOM</option>
+                          <option data-id="LEFT BOTTOM" value="LEFT BOTTOM">LEFT BOTTOM</option>
+                          <option data-id="TOP RIGHT" value="TOP RIGHT">TOP RIGHT</option>
+                          <option data-id="TOP LEFT" value="TOP LEFT">TOP LEFT</option>
+                          <option data-id="MID CENTER" value="MID CENTER">MID CENTER</option>
+                          <option data-id="ABOVE RIGHT POCKET" value="ABOVE RIGHT POCKET">ABOVE RIGHT POCKET</option>
+                          <option data-id="ABOVE LEFT POCKET" value="ABOVE LEFT POCKET">ABOVE LEFT POCKET</option>
+                          <option data-id="ABOVE POCKET" value="ABOVE POCKET">ABOVE POCKET</option>
+                          <option data-id="CENTER POCKET" value="CENTER POCKET">CENTER POCKET</option>
+                          <option data-id="RIGHT CHEST" value="RIGHT CHEST">RIGHT CHEST</option>
+                          <option data-id="LEFT CHEST" value="LEFT CHEST">LEFT CHEST</option>
+                          <option data-id="CENTER CHEST" value="CENTER CHEST">CENTER CHEST</option>
+                          <option data-id="RIGHT COLLAR" value="RIGHT COLLAR">RIGHT COLLAR</option>
+                          <option data-id="LEFT COLLAR" value="LEFT COLLAR">LEFT COLLAR</option>
+                      </select>
+                  </div>
+
+                  <div class="custom-embroidery-form__item custom-embroidery-form__item--text-colors">
+                      <label>Color</label>
+                      <div class="custom-embroidery-form__radio-list color-list">
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="0310" type="radio" name="Color" value="0310">
+                              <label for="0310" style="background-color:#f7db49;">0310</label>
+                          </div>
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="0704" type="radio" name="Color" value="0704">
+                              <label for="0704" style="background-color:#e0af25;">0704</label>
+                          </div>
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="1362" type="radio" name="Color" value="1362">
+                              <label for="1362" style="background-color:#f7b588;">1362</label>
+                          </div>
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="1102" type="radio" name="Color" value="1102">
+                              <label for="1102" style="background-color:#ee6830;">1102</label>
+                          </div>
+
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="1904" type="radio" name="Color" value="1904">
+                              <label for="1904" style="background-color:#ca2128;">1904</label>
+                          </div>
+
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="2521" type="radio" name="Color" value="2521">
+                              <label for="2521" style="background-color:#d11c5e;">2521</label>
+                          </div>
+
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="2905" type="radio" name="Color" value="2905">
+                              <label for="2905" style="background-color:#742a84;">2905</label>
+                          </div>
+
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="3840" type="radio" name="Color" value="3840">
+                              <label for="3840" style="background-color:#9dbed8;">3840</label>
+                          </div>
+
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="3522" type="radio" name="Color" value="3522">
+                              <label for="3522" style="background-color:#263a8a;">3522</label>
+                          </div>
+
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="5531" type="radio" name="Color" value="5531">
+                              <label for="5531" style="background-color:#93cc81;">5531</label>
+                          </div>
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="5422" type="radio" name="Color" value="5422">
+                              <label for="5422" style="background-color:#146734;">5422</label>
+                          </div>
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="1972" type="radio" name="Color" value="1972">
+                              <label for="1972" style="background-color:#8f8d8c;">1972</label>
+                          </div>
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="0132" type="radio" name="Color" value="0132">
+                              <label for="0132"  style="background-color:#595858;">0132</label>
+                          </div>
+
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="0931" type="radio" name="Color" value="0931">
+                              <label for="0931"  style="background: #a44623;">0931</label>
+                          </div>
+                        
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="0017" type="radio" name="Color" value="0017">
+                              <label for="0017" style="background: #ffffff;">0017</label>
+                          </div>
+                        
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="0020" type="radio" name="Color" value="0020">
+                              <label for="0020" style="background: #050505;">0020</label>
+                          </div>
+                        
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="0721" type="radio" name="Color" value="0721">
+                              <label for="0721" data-gradient="radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(167,128,50,1) 100%)" style="background: radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(167,128,50,1) 100%);">0721</label>
+                          </div>
+                        
+                          <div class="custom-embroidery-form__radio-list__item color-list__item">
+                              <input data-embroidery-field id="0150" type="radio" name="Color" value="0150">
+                              <label for="0150" data-gradient="radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(5,5,5,1) 100%)" style="background: radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(5,5,5,1) 100%);">0150</label>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="custom-embroidery-form__actions">
+                      <button onclick="resetSection('embroidery-text')" type="button"
+                          class="btn custom-embroidery-form__actions__btn custom-embroidery-form__actions__btn--reset">
+                          Reset
+                      </button>
+                      <button onclick="saveSection('embroidery-text')" type="button"
+                          class="btn custom-embroidery-form__actions__btn custom-embroidery-form__actions__btn--save">
+                          Save
+                      </button>
+                  </div>
+                </div>
+            </div>
+            <div class="custom-embroidery-form custom-embroidery-form--logo tab-item">
+                <div class="tab-title">Embroidered Logo</div>
+                <div class="tab-content">
+                  <div class="custom-embroidery-form__item custom-embroidery-form__item--logo-file">
+                      <label>Logo</label>
+                      <div style="position:relative;">
+                        <input data-embroidery-field id="upload" type="file" name="upload" class="product-form__input"
+                            required />
+                        <div onclick="removeSelectedFile()" class="product-form__input-delete hidden">
+                        	{%include 'icon-close'%}
+                        </div>
+                      </div>
+	                  <div class="custom-emb-price">+ $<span data-logo-price></span></div>
+                  </div>
+                  <div class="custom-embroidery-form__item custom-embroidery-form__item--logo-placement">
+                        <label>Logo Placement</label>
+                        <select data-embroidery-field class="custom-embroidery-form__input" name="Logo Placement">
+                            <option value="">Select</option>
+                            <option data-id="RIGHT HIP" value="RIGHT HIP">RIGHT HIP</option>
+                            <option data-id="LEFT HIP" value="LEFT HIP">LEFT HIP</option>
+                            <option data-id="RIGHT BOTTOM" value="RIGHT BOTTOM">RIGHT BOTTOM</option>
+                            <option data-id="LEFT BOTTOM" value="LEFT BOTTOM">LEFT BOTTOM</option>
+                            <option data-id="TOP RIGHT" value="TOP RIGHT">TOP RIGHT</option>
+                            <option data-id="TOP LEFT" value="TOP LEFT">TOP LEFT</option>
+                            <option data-id="MID CENTER" value="MID CENTER">MID CENTER</option>
+                            <option data-id="ABOVE RIGHT POCKET" value="ABOVE RIGHT POCKET">ABOVE RIGHT POCKET</option>
+                            <option data-id="ABOVE LEFT POCKET" value="ABOVE LEFT POCKET">ABOVE LEFT POCKET</option>
+                            <option data-id="ABOVE POCKET" value="ABOVE POCKET">ABOVE POCKET</option>
+                            <option data-id="CENTER POCKET" value="CENTER POCKET">CENTER POCKET</option>
+                            <option data-id="RIGHT CHEST" value="RIGHT CHEST">RIGHT CHEST</option>
+                            <option data-id="LEFT CHEST" value="LEFT CHEST">LEFT CHEST</option>
+                            <option data-id="CENTER CHEST" value="CENTER CHEST">CENTER CHEST</option>
+                            <option data-id="RIGHT COLLAR" value="RIGHT COLLAR">RIGHT COLLAR</option>
+                            <option data-id="LEFT COLLAR" value="LEFT COLLAR">LEFT COLLAR</option>
+                            <option data-id="RIGHT COLLAR" value="RIGHT COLLAR">RIGHT COLLAR</option>
+                            <option data-id="RIGHT UPPER SLEEVE" value="RIGHT UPPER SLEEVE">RIGHT UPPER SLEEVE</option>
+                            <option data-id="LEFT UPPER SLEEVE" value="LEFT UPPER SLEEVE">LEFT UPPER SLEEVE</option>
+                            <option data-placement-view="back" data-id="YOKE" value="BACK YOKE">YOKE</option>
+                            <option data-placement-view="back" data-id="CENTER" value="BACK CENTER">CENTER</option>
+                        </select>
+                    </div>
+                  <div class="custom-embroidery-form__actions">
+                        <button onclick="resetSection('embroidery-logo')" type="button"
+                            class="btn custom-embroidery-form__actions__btn custom-embroidery-form__actions__btn--reset">
+                            Reset
+                        </button>
+                        <button onclick="saveSection('embroidery-logo')" type="button"
+                            class="btn custom-embroidery-form__actions__btn custom-embroidery-form__actions__btn--save">
+                            Save
+                        </button>
+                    </div>
+                </div>
+          	</div>
+            <div class="embroidery-container__right-actions">
+              <div class="prod-price">Product Price: $<span data-embroidery-main-product-price></span></div>
+              <div class="customization-info-container">
+                <div class="customization-price">Personalization Price: $<span data-embroidery-price>0</span></div>
+                <div class="customization-info-text"><span>Please allow an additional 4-7 days for personalization</span></div>
+              </div>
+              <div class="total-price">Total: $<span data-embroidery-product-total-price><span></div>
+                <button type="button" onclick="submitEmb()" class="btn">Finalize</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endif%}

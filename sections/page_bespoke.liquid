@@ -1,0 +1,290 @@
+<section class="about_page">
+  <div class="abput_page_main" style="background-image: url({{ section.settings.main_banner| img_url: 'master', format: 'pjpg' }});">
+    <div class="container">
+      <div class="about_page_heding">
+        <h1 class="main-title">{{ section.settings.heading }}</h1>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="bespoke_pera bottom">
+      <p> {{ section.settings.main_paragraph }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="client_requirements">
+  <div class="requirements">
+    {%- for block in section.blocks -%}
+    {%- case block.type -%}
+    {%- when 'one' -%}
+    <div class="bottom" >
+      <div class="requirements_main">
+        <div class="container" style="position:relative">
+          <div class="requirements_one" style="background-image: url({{ block.settings.left_right_image | img_url: 'master' }});">
+            <img  class="visible-xs "src="{{ block.settings.left_right_image | img_url: 'master' }}" alt="{{ block.settings.title | strip_html }}">
+            <div class="">
+              <div class="requirements_five left"  >
+                <h2>{{ block.settings.title }} </h2>
+                <p>{{ block.settings.details }}</p>            
+              </div>
+            </div>
+          </div>
+          <div class="requirements_three"></div>
+        </div>
+      </div>
+    </div>
+    {%- when 'two' -%}
+
+    <div class="bottom" >
+      <div class="conceptual_main ">
+        <div class="container">
+          <div data-delighter class="conceptual_one delighter right" style="background-image: url({{ block.settings.left_right_image | img_url: 'master' }});" >
+            <img  class="visible-xs"src="{{ block.settings.left_right_image | img_url: 'master' }}"  alt="{{ block.settings.title | strip_html }}">
+
+               
+            <div class="requirements_five conceptual_two right">
+              <h2>{{ block.settings.title }} </h2>
+                 <p >{{ block.settings.details }}</p>              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    {%- when 'three' -%}
+    <div class="Fabrics_main bottom">
+      <div class="container">
+        <div class="row">
+          <div class="splash fabrics_mian_one ">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <div class="fabrics_left fabrics_left_position_main" >
+                <img data-delighter class="delighter bottom" src="{{ block.settings.left_right_image | img_url: 'master' }}"  alt="{{ block.settings.title | strip_html }}">
+                
+                <div class="fabrics_left_position">
+                  <span>
+                    <lable class="white d_one right" ></lable>
+                    <img data-delighter class="d_two delighter right"   src="{{ 'grey_stroke.png' |asset_url}}"  alt="{{ block.settings.title | strip_html }}">
+                    <lable  class="black d_three right" ></lable>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <div class="requirements_five left" >
+                <h2>{{ block.settings.title }} </h2>
+                   <p>{{ block.settings.details }}</p>                 
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    {%- when 'four' -%}
+    <div class="">
+      <div class="sampling_main bottom" >
+        <div class="container">
+          <div class="samplin" style="background-image: url({{ block.settings.left_right_image | img_url: 'master' }});">
+            <img  class="visible-xs" src="{{ block.settings.left_right_image | img_url: 'master' }}"  alt="{{ block.settings.title | strip_html }}">
+
+            <div class="requirements_five conceptual_two right">
+              <h2>{{ block.settings.title }} </h2>
+                 <p>{{ block.settings.details }}</p>                  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    {%- when 'five' -%}
+    <div class="final_product_main bottom" >
+      <div class="container">
+        <div class="row">
+          <div class="fabrics_mian_one ">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <div class="fabrics_left fabrics_left_position_main" >
+                <img src="{{ block.settings.left_right_image | img_url: 'master' }}"  alt="{{ block.settings.title | strip_html }}">
+                <div class="fabrics_left_position">
+                <img src="{{ block.settings.fabrics_left_position_image }}"  alt="{{ block.settings.title | strip_html }}">
+                
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <div class="requirements_five left" >
+                <h2>{{ block.settings.title }} </h2>
+                   <p data-delighter>{{ block.settings.details }}</p>                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> 
+    <div class="clearfix"></div>
+    {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Page Bespoke",
+    "settings": [
+      {
+        "id": "main_banner",
+        "type": "image_picker",
+        "label": "Main Banner Image"
+      },    
+      {
+        "id": "heading",
+        "type": "text",
+        "label": "Main Heading",
+        "default": "Bespoke"
+      },
+	  {
+        "id": "main_paragraph",
+        "type": "textarea",
+        "label": "Main Paragraph",
+        "default": " <p>Every FORM collection transcends what is expected of corporate attire. </p>"
+      }			
+],
+	"blocks": [
+      {
+        "type": "one",
+        "name": "One",
+        "settings": [
+		  {
+            "id": "left_right_image",
+            "type": "image_picker",
+        	"label": "Left Right Image"
+          },    
+		  {
+            "id": "title",
+            "type": "text",
+        	"label": "Title",
+        	"default": "<span>01</span>Client Requirements"
+          },  
+		  {
+            "id": "details",
+            "type": "textarea",
+        	"label": "Details ",
+        	"default": " <p>The process begins with a meeting to establish requirements for the collection and to better understand what aesthetic needs to  be reflected in the uniform attire. </p>"
+          },
+          {
+            "id": "background_image",
+            "type": "image_picker",
+            "label": "Background Image"
+          }
+        ]
+      },
+	  {
+        "type": "two",
+        "name": "Two",
+        "settings": [
+ 
+		  {
+            "id": "left_right_image",
+            "type": "image_picker",
+        	"label": "Left Right Image"
+          },    
+		  {
+            "id": "title",
+            "type": "text",
+        	"label": "Title",
+        	"default": "<span>01</span>Client Requirements"
+          },  
+		  {
+            "id": "details",
+            "type": "textarea",
+        	"label": "Details ",
+        	"default": " <p>The process begins with a meeting to establish requirements for the collection and to better understand what aesthetic needs to  be reflected in the uniform attire. </p>"
+          }
+        ]
+      },
+	  {
+        "type": "three",
+        "name": "Three",
+        "settings": [
+ 
+		  {
+            "id": "left_right_image",
+            "type": "image_picker",
+        	"label": "Left Right Image"
+          },
+  	      {
+            "id": "fabrics_left_position_image",
+            "type": "image_picker",
+        	"label": "Fabrics left Position Image"
+          },    
+		  {
+            "id": "title",
+            "type": "text",
+        	"label": "Title",
+        	"default": "<span>01</span>Client Requirements"
+          },  
+		  {
+            "id": "details",
+            "type": "textarea",
+        	"label": "Details",
+        	"default": " <p>The process begins with a meeting to establish requirements for the collection and to better understand what aesthetic needs to  be reflected in the uniform attire. </p>"
+          }
+        ]
+      },
+	  {
+        "type": "four",
+        "name": "Four",
+        "settings": [
+ 
+		  {
+            "id": "left_right_image",
+            "type": "image_picker",
+        	"label": "Left Right Image"
+          },    
+		  {
+            "id": "title",
+            "type": "text",
+        	"label": "Title",
+        	"default": "<span>01</span>Client Requirements"
+          },  
+		  {
+            "id": "details",
+            "type": "textarea",
+        	"label": "Details",
+        	"default": " <p>The process begins with a meeting to establish requirements for the collection and to better understand what aesthetic needs to  be reflected in the uniform attire. </p>"
+          }
+        ]
+      },
+	  {
+        "type": "five",
+        "name": "Five",
+        "settings": [
+ 
+		  {
+            "id": "left_right_image",
+            "type": "image_picker",
+        	"label": "Left Right Image"
+          },
+		  {
+            "id": "title",
+            "type": "text",
+        	"label": "Title",
+        	"default": "<span>01</span>Client Requirements"
+          },  
+		  {
+            "id": "details",
+            "type": "textarea",
+        	"label": "Details",
+        	"default": " <p>The process begins with a meeting to establish requirements for the collection and to better understand what aesthetic needs to  be reflected in the uniform attire. </p>"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

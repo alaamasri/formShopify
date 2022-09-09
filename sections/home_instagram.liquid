@@ -1,0 +1,37 @@
+<section class="instagram">
+  <div class="instagram_main">
+    <h4>{{ section.settings.heading }}</h4>
+    <img src="{{ section.settings.insta | img_url: 'master', format: 'pjpg' }}"  alt="{{ section.settings.heading }}">
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Home Instagram",
+    "settings": [
+      {
+        "id": "insta",
+        "type": "image_picker",
+        "label": "Insta  Image"
+      },    
+      {
+        "id": "heading",
+        "type": "text",
+        "label": "Insta heading",
+        "default": "Follow along on Instagram"
+      }
+	],
+    "presets": [
+      {
+        "name": "Home Instagram",
+        "category": "Custom"        
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

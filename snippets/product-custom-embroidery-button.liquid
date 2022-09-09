@@ -1,0 +1,6 @@
+{%if product.metafields.embroidery and product.metafields.embroidery.enabled %}
+  <div onclick="embPop()" class="emb-btn emb-add-btn">Add Embroidery</div>
+  <div onclick="embPop()" class="emb-btn emb-edit-btn hidden">
+    Edit Embroidery | $<span data-embroidery-price></span> <span onclick="removeEmp(event)" class="delete-emb">{%include 'icon-close'%}</span>
+  </div>
+{%endif%}

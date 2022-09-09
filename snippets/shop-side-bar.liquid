@@ -1,0 +1,69 @@
+<div class="shop_list">  
+    <script type="text/javascript">
+      function showdss(para) {  
+        $('#tabs'+para).slideToggle('1000');
+        if($('#shp_catdiv'+para+' h3').hasClass('acc-active')) {
+          $('#shp_catdiv'+para+' h3').removeClass('acc-active');        
+        } else {
+          $('#shp_catdiv'+para+' h3').addClass('acc-active');
+        }
+      }
+  
+      function togglefilter() {
+          $('.shop_list_container').toggleClass('active'); 
+      }
+  
+      $(document).ready(function() {
+        $('#shp_catdiv2').insertBefore('#shp_catdiv0');
+        
+      });  
+      $(document).keyup(function(e) { 
+        if (e.keyCode === 27) $('.shop_list_container').removeClass('active')  
+      });
+      
+      $(document).mouseup(function(e) {
+        var container = $(".shop_list");
+        // if the target of the click isn't the container nor a descendant of the container
+        if (!container.is(e.target) && container.has(e.target).length === 0) {
+          $('.shop_list_container').removeClass('active')
+        }
+      });
+  
+    </script>
+  
+    <div class="filterdiv " >
+  
+    <div class="faq_1">
+
+    </div> 
+    
+    <div class="shop_left">
+      {% if current_tags %}  
+      {% assign alltag = current_tags | join: " + " %}
+  
+      {% assign split_alltag = alltag | split: ' + ' %}
+  
+  
+      <div class="your_selection" style="display:none;">
+        <h4>Selected Createria</h4>
+        <h5>{{ collection.title }}</h5>
+  
+        {% for spltag in split_alltag %}
+        {% assign spltags = spltag | split: '_' %}
+  
+        {% for spltagss in spltags.last %}            		
+        <ul>
+          <li><img src="{{ 'wrong.png' | asset_url }}"></li>
+          <li>{{ spltags.first | capitalize }} - {{ spltagss | capitalize }}</li>
+        </ul>          
+        {% endfor %}      
+        {% endfor %}            
+      </div>
+      {% endif %}
+  
+      <div class="category_div">
+      </div>
+    </div>   
+    </div>
+  </div>
+  {%include 'render-filters'%}

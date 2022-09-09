@@ -1,0 +1,89 @@
+<section class="about_page">
+  <div class="abput_page_main" style="background-image: url({{ section.settings.main_banner| img_url: 'master', format: 'pjpg'}});">
+    <div class="container">
+      <div class="about_page_heding">
+        <h1 class="main-title">{{ section.settings.page_heading }}</h1>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="time_line">
+  <div class="container">
+    <div class="time_line_mian">
+      <div class="time_year">
+        <div class="time_yer_slider">
+          <ul>
+            <div class="slider_year">
+              {% for block in section.blocks %}
+              {% if block.type == 'timeline' %}
+              <li class="sinec active" >{{ block.settings.year }}</li>
+              {% endif %}
+              {% endfor %}
+            </div>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="time_slider">
+      <div class="time_slider_one">
+        {% for block in section.blocks %}
+        {% if block.type == 'timeline' %}
+        <div class="time_slider_img">
+          <div class="time_year_txt">
+            {{ block.settings.year_info }}           
+          </div>
+          <img src="{{ block.settings.year_info_image | img_url: '800x800', format: 'pjpg' }}" alt="{{ section.settings.page_heading }} {{ block.settings.year }}">
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+  {
+    "name": "Page Timeline",
+    "settings": [
+        {
+          "id": "main_banner",
+          "type": "image_picker",
+          "label": "Banner background Image"
+        },    
+        {
+          "id": "page_heading",
+          "type": "text",
+          "label": "Page Heading",
+          "default": "Timeline"
+        }
+],
+	"blocks": [
+      {
+        "type": "timeline",
+        "name": "Timeline",
+        "settings": [		   
+		  {
+            "id": "year",
+            "type": "text",
+        	"label": "Year of info",
+        	"default": "1989"
+          },  
+		  {
+            "id": "year_info",
+            "type": "textarea",
+        	"label": "Year Info ",
+        	"default": "<p>(1989): Modern Fashion Design (MFD)was founded in Amman, Jordan by Samia Gedeon-Talhouni, as a family-owned couture fashion house. Designers and technical staff travelled from France to join the design team. MFD imported all materials and  accessories from Europe, establishing a first-of-its-kind fashion house in Jordan.</p>"
+          },
+		  {
+            "id": "year_info_image",
+            "type": "image_picker",
+        	"label": "year info Image"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+{% stylesheet %}
+{% endstylesheet %}
+{% javascript %}
+{% endjavascript %}

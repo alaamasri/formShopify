@@ -1,0 +1,102 @@
+<section class="bespoke">
+  <div class="bespoke_main">
+    <div class="bespoke_left_img">
+      <div class="left_bespoke">
+        <img class="hidden-xs"src="{{ section.settings.Bespoke_left_bg | img_url: 'master', format: 'pjpg' }}">
+      </div>
+    </div>
+    <div class="bespoke_right_img">
+      <img src="{{ section.settings.Bespoke_right_bg | img_url: 'master', format: 'pjpg' }}">
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 visible-xs">
+        <div data-delighter class="right_bespoke_img delighter bottom">
+          <img src="{{ section.settings.bespoke_right| img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.tag }}">
+        </div>
+      </div>
+      <div class="left_bespoke visible-xs">
+        <img src="{{ section.settings.Bespoke_left_bg | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.tag }}">
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <div  class="right left_bespoke_txt" >
+          <h5>{{ section.settings.tag }}</h5>
+          <h6>{{ section.settings.title }}</h6>
+          <p>{{ section.settings.details }}</p>
+          <a href="{{ section.settings.link }}" class="btn">{{ section.settings.btn }}</a>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 hidden-xs">
+        <div data-delighter class="right_bespoke_img delighter bottom">
+          <img src="{{ section.settings.bespoke_right| img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.tag }}">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Home Bespoke",
+    "settings": [
+        	
+      {
+        "id": "Bespoke_left_bg",
+        "type": "image_picker",
+     	 "label": "Bespoke Left Background"
+      },   
+      {
+        "id": "Bespoke_right_bg",
+        "type": "image_picker",
+        "label": "Bespoke Right Background"
+      },   
+      {
+        "id": "bespoke_right",
+        "type": "image_picker",
+        "label": "Bespoke Right Image"
+      },
+      {
+        "id": "title",
+        "type": "text",
+        "label": "Title",
+        "default": "Every FORM collection <br> transcends what is expected <br> of corporate attire"
+      },
+      {
+        "id": "tag",
+        "type": "text",
+        "label": "Tag",
+        "default": "Bespoke"
+      },
+      {
+        "id": "details",
+        "type": "textarea",
+        "label": "Details",
+        "default": "FORMs bespoke process is defined by artisanal craftsmanship and unwavering attention to details as our design team partners with the client to help in fully realizing the vision for the collection."
+      },  
+      {
+        "id": "btn",
+        "type": "text",
+        "label": "Button Label",
+        "default": "READ ABOUT OUR PROCESS"
+      },  
+      {
+        "id": "link",
+        "type": "url",
+        "label": "Button Link"
+      }	
+],
+    "presets": [
+      {
+        "name": "Home Bespoke",
+        "category": "Custom"        
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

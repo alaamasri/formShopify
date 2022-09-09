@@ -1,0 +1,274 @@
+
+<div class="page-width col-xs-12 {% if template.name == "index" %} home-best-sellers {%else  %}col-lg-8{% endif %} related-products">
+  {% if section.settings.title != blank %}
+    <div class="section-header text-center">
+    {% if template.name == "index" %}<h5>{{ section.settings.subtitle | escape }}</h5>{% endif %}
+      <h2 {% if template.name == "index" %}class="home-main-h1"{% endif%}>{{ section.settings.title | escape }}</h2>
+    </div>
+  {% endif %}
+
+  {%- assign collection = collections[section.settings.collection] -%}
+
+  {% case section.settings.grid %}
+    {% when 2 %}
+      {%- assign max_height = 530 -%}
+      {%- assign grid_item_width = 'medium-up--one-half' -%}
+    {% when 3 %}
+      {%- assign max_height = 345 -%}
+      {%- assign grid_item_width = 'small--one-half medium-up--one-third' -%}
+    {% when 4 %}
+      {%- assign max_height = 250 -%}
+      {%- assign grid_item_width = 'small--one-half medium-up--one-quarter' -%}
+    {% when 5 %}
+      {%- assign max_height = 195 -%}
+      {%- assign grid_item_width = 'small--one-half medium-up--one-fifth' -%}
+  {% endcase %}
+
+  {%- assign product_limit = section.settings.grid | times: section.settings.rows -%}
+
+  <ul class="collection-matrix {% if template.name == "index" %} collection-rectangles{% endif %}">
+    {% for product in collection.products limit: product_limit %}
+		{% unless product.id == 5554417336479 %}
+        	{% assign s = forloop.index | plus:paginate.current_offset %}
+            {% include 'product-card-grid' with product %}            
+		{% endunless %}
+    {% endfor %}
+  </ul>
+
+  {% if section.settings.show_view_all %}
+    <hr class="hr--invisible" aria-hidden="true" />
+    <div class="text-center">
+      <a href="{{ collection.url }}" class="btn" aria-label="{{ 'collections.general.view_all_label' | t: collection_name: collection.title }}">
+        {{ 'collections.general.view_all' | t }}
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+
+<script>
+  function mozaikClasses() {
+    var prodCount = 1;
+    for (var i = 1; i <= 10; i++) {
+        $('.mos-product-card').removeClass('child_' + i);
+    }
+
+
+    $('.mos-product-card').each(function () {
+        $(this).addClass('child_' + prodCount);
+        prodCount++;
+        if ($(window).width() > 767) {
+            if (prodCount == 10) {
+                prodCount = 1
+            }
+        } else {
+            if (prodCount == 11) {
+                prodCount = 1
+            }
+        }
+    });
+  }
+
+  function tallestImage4All() {
+      var maxHeight = 0;
+      $('.plp_image_main img').each(function () {
+          var thisH = $(this).height();
+          if (thisH > maxHeight) {
+              maxHeight = thisH;
+          }
+      });
+      if (maxHeight > 467) {
+          maxHeight = 467;
+      }
+      if (maxHeight < 201) {
+          maxHeight = 201;
+      }
+      $('.plp_image_main img').height(maxHeight);
+
+  }
+
+  $(window).resize(function () {
+      $('.plp_image_main img').css('height', '');
+      tallestImage4All();
+      mozaikClasses();
+  });
+  
+  $(function(){
+	tallestImage4All();
+	mozaikClasses();
+  });
+</script>
+
+{% schema %}
+{
+  "name": {
+    "de": "Featured Kategorie",
+    "en": "Featured collection",
+    "es": "Colección destacada",
+    "fr": "Collection vedette",
+    "it": "Collezione in evidenza",
+    "ja": "特集コレクション",
+    "nl": "Uitgelichte collectie",
+    "pt-BR": "Coleção em destaque",
+    "zh-CN": "特色产品系列",
+    "zh-TW": "精選商品系列"
+  },
+  "class": "index-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": {
+        "de": "Titel",
+        "en": "Heading",
+        "es": "Título",
+        "fr": "En-tête",
+        "it": "Heading",
+        "ja": "見出し",
+        "nl": "Kop",
+        "pt-BR": "Título",
+        "zh-CN": "标题",
+        "zh-TW": "標題"
+      },
+      "default": {
+        "de": "Featured Kategorie",
+        "en": "Featured collection",
+        "es": "Colección destacada",
+        "fr": "Collection vedette",
+        "it": "Collezione in evidenza",
+        "ja": "特集コレクション",
+        "nl": "Uitgelichte collectie",
+        "pt-BR": "Coleção em destaque",
+        "zh-CN": "特色产品系列",
+        "zh-TW": "精選商品系列"
+      }
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": {
+        "en": "Subtitle"
+      }
+    
+    },
+    {
+      "id": "collection",
+      "type": "collection",
+      "label": {
+        "de": "Kategorie",
+        "en": "Collection",
+        "es": "Colección",
+        "fr": "Collection",
+        "it": "Collezione",
+        "ja": "コレクション",
+        "nl": "Collectie",
+        "pt-BR": "Coleção",
+        "zh-CN": "收藏",
+        "zh-TW": "商品系列"
+      }
+    },
+    {
+      "type": "range",
+      "id": "grid",
+      "label": {
+        "de": "Produkte per Reihe",
+        "en": "Products per row",
+        "es": "Productos por fila",
+        "fr": "Produits par rangée",
+        "it": "Prodotti per riga",
+        "ja": "行あたりの商品数",
+        "nl": "Producten per rij",
+        "pt-BR": "Produtos por linha",
+        "zh-CN": "每行产品数",
+        "zh-TW": "每列產品數"
+      },
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "rows",
+      "label": {
+        "de": "Reihen",
+        "en": "Rows",
+        "es": "Filas",
+        "fr": "Rangées",
+        "it": "Righe",
+        "ja": "行",
+        "nl": "Rijen",
+        "pt-BR": "Linhas",
+        "zh-CN": "行数",
+        "zh-TW": "列"
+      },
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": {
+        "de": "Produkt-Lieferanten anzeigen",
+        "en": "Show product vendors",
+        "es": "Mostrar proveedores del producto",
+        "fr": "Afficher les vendeurs",
+        "it": "Mostra fornitori prodotto",
+        "ja": "商品の販売元を表示する",
+        "nl": "Productleveranciers weergeven",
+        "pt-BR": "Exibir fornecedores do produto",
+        "zh-CN": "显示产品厂商",
+        "zh-TW": "顯示產品廠商"
+      },
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": {
+        "de": "'Alle anzeigen' Button anzeigen",
+        "en": "Show 'View all' button",
+        "es": "Mostrar el botón 'Ver todo'",
+        "fr": "Afficher le bouton “Tout voir”",
+        "it": "Mostra il pulsante \"Visualizza tutto\"",
+        "ja": "「すべて表示」ボタンを表示する",
+        "nl": "Knop 'Alles weergeven' weergeven",
+        "pt-BR": "Exibir botão 'Visualizar tudo'",
+        "zh-CN": "显示“查看全部”按钮",
+        "zh-TW": "顯示「檢視全部」按鈕"
+      },
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": {
+        "de": "Featured Kategorie",
+        "en": "Featured collection",
+        "es": "Colección destacada",
+        "fr": "Collection vedette",
+        "it": "Collezione in evidenza",
+        "ja": "特集コレクション",
+        "nl": "Uitgelichte collectie",
+        "pt-BR": "Coleção em destaque",
+        "zh-CN": "特色产品系列",
+        "zh-TW": "精選商品系列"
+      },
+      "category": {
+        "de": "Kategorie",
+        "en": "Collection",
+        "es": "Colección",
+        "fr": "Collection",
+        "it": "Collezione",
+        "ja": "コレクション",
+        "nl": "Collectie",
+        "pt-BR": "Coleção",
+        "zh-CN": "收藏",
+        "zh-TW": "商品系列"
+      }
+    }
+  ]
+}
+{% endschema %}

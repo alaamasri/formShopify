@@ -1,0 +1,78 @@
+<section class="about_us  ">
+  <div class="container">
+    <div class="row">
+      <div class="abou_main">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+          <div class="about_main">
+            <img class="r-zoom-in-out" src="{{ section.settings.about_image | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.tag }}">
+          </div>
+        </div>
+        <div class="left col-lg-6 col-md-6 col-sm-6 col-xs-12  ">
+          <div class="about_main_right">
+            <h5>{{ section.settings.tag }}</h5>
+            <h1 class="home-main-h1"> {{ section.settings.title }}</h1>
+            <p> {{ section.settings.details }}</p>
+            <a href="{{ section.settings.link }}" class="btn">
+              {{ section.settings.btn }}
+            </a>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Home About Us",
+    "settings": [
+	  {
+        "id": "about_image",
+        "type": "image_picker",
+        "label": "About Image"
+      },
+      {
+        "id": "title",
+        "type": "text",
+        "label": "Title",
+        "default": "Artisanal Craftsmanship <br> &amp; Quality"
+      },
+      {
+        "id": "tag",
+        "type": "text",
+        "label": "Tag",
+        "default": "About us"
+      },
+      {
+        "id": "details",
+        "type": "textarea",
+        "label": "Details",
+        "default": "At the heart of FORM, we are uniform artisans. Each garment and accessory is handled with meticulous care and consideration. FORM’s legacy of innovative tradition and corporate  couture is built upon our emphasis in perfecting unique  solutions for each of our clients’ individual needs."
+      },  
+      {
+        "id": "btn",
+        "type": "text",
+        "label": "Button Label",
+        "default": "LEARN MORE"
+      },  
+      {
+        "id": "link",
+        "type": "url",
+        "label": "Button Link"
+      }
+	],
+    "presets": [
+      {
+        "name": "Home About Us",
+        "category": "Custom"        
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

@@ -1,0 +1,209 @@
+<section class="our_collection">
+    <div class="container">
+      <div class="our_collection_main">
+        <h2>{{ section.settings.heading }}</h2>
+        <div class="our_mian ">
+          <div class="hidden-xs" >
+            <div class="our right r-cropped-from-right" >
+              <a href="{{ section.settings.collection_link }}">
+                <div class="crop-img"> 
+                  <img src="{{ section.settings.collection_image | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.heading }} {{ section.settings.collection_name }}">
+                </div>
+                <div class="our_txt">
+                  <h4>{{ section.settings.collection_name }}</h4>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="visible-xs ">
+            <div class="our right">
+              <a href="{{ section.settings.collection_link }}">
+                <img src="{{ section.settings.collection_image_mobile | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.heading }} {{ section.settings.collection_name }}">
+                <div class="our_txt">
+                  <h4>{{ section.settings.collection_name }}</h4>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="hidden-xs" >
+            <div class="our_one left r-cropped-from-left">
+              <a href="{{ section.settings.collection_link_two }}">
+                <div class="crop-img">
+                    <img src="{{ section.settings.collection_image_two | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.heading }} {{ section.settings.collection_name_two }}">
+                </div>
+                <div class="our_one_txt">
+                  <h4>{{ section.settings.collection_name_two }}</h4>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="visible-xs ">
+            <div class="our_one left">
+              <a href="{{ section.settings.collection_link_two }}">
+                <img src="{{ section.settings.collection_image_two_mobile | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.heading }} {{ section.settings.collection_name_two }}">
+                <div class="our_one_txt">
+                  <h4>{{ section.settings.collection_name_two }}</h4>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="collection_main">
+          <div class="hidden-xs ">
+            <div class="collection_one right l-cropped-from-right" >
+              <a href="{{ section.settings.collection_link_thee }}">
+                <div class="crop-img"> 
+                    <img src="{{ section.settings.collection_image_three | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.heading }} {{ section.settings.collection_name_three }}">
+                </div>
+                <div class="our_txt">
+                  <h4>{{ section.settings.collection_name_three }}</h4>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="visible-xs">
+            <div class="collection_one right" >
+              <a href="{{ section.settings.collection_link_thee }}">
+                <img src="{{ section.settings.collection_image_three_mobile | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.heading }} {{ section.settings.collection_name_three }}">
+                <div class="our_txt">
+                  <h4>{{ section.settings.collection_name_three }}</h4>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="hidden-xs ">
+            <div class="collection_two left l-cropped-from-left" >
+              <a href="{{ section.settings.collection_link_four }}">
+                <div class="crop-img"> 
+                    <img src="{{ section.settings.collection_image_four | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.heading }} {{ section.settings.collection_name_four }}">
+                </div>
+                <div class="our_one_txt">
+                  <h4>{{ section.settings.collection_name_four }} </h4>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="visible-xs">
+            <div class="collection_two left" >
+              <a href="{{ section.settings.collection_link_four }}">
+                <img src="{{ section.settings.collection_imagefour_mobile | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.heading }} {{ section.settings.collection_name_four }}">
+                <div class="our_one_txt">
+                  <h4>{{ section.settings.collection_name_four }} </h4>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  {% schema %}
+    {
+      "name": "Home Collection",
+      "settings": [
+            {
+              "id": "heading",
+              "type": "text",
+              "label": "Heading Title",
+              "default": "The Powerful Men"
+            },
+            {
+              "id": "collection_link",
+              "type": "url",
+              "label": "Collection Link"
+            },
+            {
+              "id": "collection_image",
+              "type": "image_picker",
+              "label": "Collection Image "
+            },
+            {
+              "id": "collection_image_mobile",
+              "type": "image_picker",
+              "label": "Collection Image Mobile"
+            },
+            {
+              "id": "collection_name",
+              "type": "text",
+              "label": "Collection Name",
+              "default": "Kitchen"
+            },
+            {
+              "id": "collection_link_two",
+              "type": "url",
+              "label": "Collection Link Two"
+            },
+            {
+              "id": "collection_image_two",
+              "type": "image_picker",
+              "label": "Collection Image Two"
+            },
+            {
+              "id": "collection_image_two_mobile",
+              "type": "image_picker",
+              "label": "Collection Image Mobile Two"
+            },
+            {
+              "id": "collection_name_two",
+              "type": "text",
+              "label": "Collection Name Two",
+              "default": "Service"
+            },
+            {
+              "id": "collection_link_thee",
+              "type": "url",
+              "label": "Collection Link Three"
+            },
+            {
+              "id": "collection_image_three",
+              "type": "image_picker",
+              "label": "Collection Image Three"
+            },
+            {
+              "id": "collection_image_three_mobile",
+              "type": "image_picker",
+              "label": "Collection Image Mobile Three"
+            },
+            {
+              "id": "collection_name_three",
+              "type": "text",
+              "label": "Collection Name Three",
+              "default": "Corporate"
+            },
+            {
+              "id": "collection_link_four",
+              "type": "url",
+              "label": "Collection Link Four"
+            },
+            {
+              "id": "collection_image_four",
+              "type": "image_picker",
+              "label": "Collection Image Four"
+            },
+            {
+              "id": "collection_imagefour_mobile",
+              "type": "image_picker",
+              "label": "Collection Image Mobile Four"
+            },
+            {
+              "id": "collection_name_four",
+              "type": "text",
+              "label": "Collection Name Four",
+              "default": "Corporate"
+            }
+      ],	
+      "presets": [
+        {
+          "name": "Home Collection",
+          "category": "Custom"        
+        }
+      ]
+    }
+  {% endschema %}
+  
+  {% stylesheet %}
+  {% endstylesheet %}
+  
+  {% javascript %}
+  {% endjavascript %}

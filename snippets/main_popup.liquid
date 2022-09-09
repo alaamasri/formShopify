@@ -1,0 +1,142 @@
+<div class="popup_div_one one">
+  <div class="popup_div_two">
+    <div class="popup">
+      <div class="">
+        <div class="">
+          <div class="">
+            <div class="popup_mian">
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 visible-xs">
+                <div class="popup_right_top">
+                  <div class="popup_right">
+                    <a class="popclose " onclick="closepop()"><i class="fa fa-times"></i></a>
+
+                    <div class="popup_logo">
+                      <img src="{{ 'header-logo.jpg' | asset_url }}">
+                    </div>
+                    <div class="popup_dis">
+                      <!--                     <h1>Online Store</h1> -->
+                      <h3>Online Store Coming Soon <br> Fall/Winter 2019</h3>        
+
+                      <!--                     <h4>Corporations who care about the style, image <br>
+and sophistication of their staff</h4> -->
+                      <div class="clearfix"></div>
+
+                      {% comment %}
+                      {%- assign formId = 'ContactFooter' -%}
+                      {% form 'customer', id: formId, novalidate: 'novalidate' %}
+                      {%- if form.posted_successfully? -%}
+                      <p class="form-message form-message--success" tabindex="-1" data-form-status>
+                        {{ 'general.newsletter_form.confirmation' | t }}
+                      </p>
+                      {%- endif -%}
+                      <input type="hidden" name="contact[tags]" value="newsletter">
+                      <input type="email"
+                             name="contact[email]"
+                             id="{{ formId }}-email"
+                             class="input-group__field newsletter__input{% if form.errors %} input--error{% endif %}"
+                             value="{{ form.email }}"
+                             placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"
+                             aria-label="{{ 'general.newsletter_form.email_placeholder' | t }}"
+                             aria-required="true"
+                             required
+                             autocorrect="off"
+                             placeholder="Enter your email"
+                             autocapitalize="off"
+                             {% if form.errors %}
+                             aria-invalid="true"
+                             aria-describedby="{{ formId }}-email-error"
+                             data-form-status
+                             {% endif %}>
+                      <button  type="submit" name="commit" id="Subscribe">
+                        <i class="fas fa-arrow-right"></i>
+                      </button>
+
+                      {% if form.errors contains 'email' %}
+                      <span id="{{ formId }}-email-error" class="input-error-message">
+                        {% include 'icon-error' %} {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}.
+                      </span>
+                      {% endif %}
+                      {% endform %}
+                      {% endcomment %}
+
+                      <div class="clearfix"></div>
+                      <!--<h5><a class="h_menu " onclick="closepop()">NO THANKS</a> </h5>
+<h6>Email will be used in accordance with our privacy policy</h6> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <div class="popup_left">
+                  <img src="{{ 'popimg.jpg' | file_url }}">
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 hidden-xs">
+                <div class="popup_right_top">
+                  <div class="popup_right">
+                    <a class="popclose " onclick="closepop()"><i class="fa fa-times"></i></a>
+
+                    <div class="popup_logo">
+                      <img src="{{ 'header-logo.jpg' | asset_url }}">
+                    </div>
+                    <div class="popup_dis">
+                      <!--                     <h1>Online Store</h1> -->
+                      <h3><br><br>Online Store Coming Soon <br><br> Fall/Winter 2019</h3>
+                      <!--                     <h4>Corporations who care about the style, image <br>
+and sophistication of their staff</h4> -->
+                      <div class="clearfix"></div>
+
+                      {% comment %}
+                      {%- assign formId = 'ContactFooter' -%}
+                      {% form 'customer', id: formId, novalidate: 'novalidate' %}
+                      {%- if form.posted_successfully? -%}
+                      <p class="form-message form-message--success" tabindex="-1" data-form-status>
+                        {{ 'general.newsletter_form.confirmation' | t }}
+                      </p>
+                      {%- endif -%}
+                      <input type="hidden" name="contact[tags]" value="newsletter">
+                      <input type="email"
+                             name="contact[email]"
+                             id="{{ formId }}-email"
+                             class="input-group__field newsletter__input{% if form.errors %} input--error{% endif %}"
+                             value="{{ form.email }}"
+                             placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"
+                             aria-label="{{ 'general.newsletter_form.email_placeholder' | t }}"
+                             aria-required="true"
+                             required
+                             autocorrect="off"
+                             placeholder="Enter your email"
+                             autocapitalize="off"
+                             {% if form.errors %}
+                             aria-invalid="true"
+                             aria-describedby="{{ formId }}-email-error"
+                             data-form-status
+                             {% endif %}>
+                      <button  type="submit" name="commit" id="Subscribe">
+                        <i class="fas fa-arrow-right"></i>
+                      </button>
+
+                      {% if form.errors contains 'email' %}
+                      <span id="{{ formId }}-email-error" class="input-error-message">
+                        {% include 'icon-error' %} {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}.
+                      </span>
+                      {% endif %}
+                      {% endform %}
+                      {% endcomment %}
+
+                      <div class="clearfix"></div>
+                      <!--<h5><a class="h_menu " onclick="closepop()">NO THANKS</a> </h5>
+<h6>Email will be used in accordance with our privacy policy</h6> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

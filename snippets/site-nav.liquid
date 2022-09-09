@@ -1,0 +1,348 @@
+<ul class="site-nav list--inline {{ nav_alignment }}" id="SiteNav">  
+  {% for link in linklists[section.settings.main_linklist].links %}
+  {%- assign child_list_handle = link.title | handleize -%}
+
+  {% comment %}
+  Check if third-level nav exists on each parent link.
+  {% endcomment %}
+  {%- assign three_level_nav = false -%}
+  {% if link.links != blank %}
+  {% if link.levels == 2 %}
+  {%- assign three_level_nav = true -%}
+  {% endif %}
+  {% endif %}
+
+  {% assign s = false %}
+  {% assign h = false %}
+
+  {% for block in section.blocks %}           
+  {% if block.settings.name == link.title %}
+  {% if block.settings.image1 != blank %}
+  {% assign s = true %}
+  {% endif %}
+  {% if block.settings.html != blank %}
+  {% assign h = true %}
+  {% endif %}
+  {% endif %}
+  {% endfor %}
+
+  {% if link.links != blank %}
+  <li {% if s == true or h == true %}style="position:static"{% endif %} class="site-nav--has-dropdown{% if three_level_nav %} site-nav--has-centered-dropdown{% endif %}{% if link.active %} site-nav--active{% endif %}">
+    <a href="{{ link.url }}" title="{{ link.title }}" class="site-nav__link site-nav__link--main"{% if link.active %} aria-current="page"{% endif %} type="button" aria-haspopup="true" aria-expanded="false" aria-controls="SiteNavLabel-{{ child_list_handle }}">
+      {{ link.title }}
+    </a>
+
+    <div {% if s == false and h == false %} style="width:auto; max-width:100%"{% endif %} class="{% if s == true and h == false %} megamtop {% endif %} site-nav__dropdown{% if three_level_nav %} site-nav__dropdown--centered{% endif %}" id="SiteNavLabel-{{ child_list_handle }}">                  
+      {% if three_level_nav %}
+      <div class="site-nav__childlist">
+        {% for block in section.blocks %}           
+        {% if block.settings.position == 'left' %}	
+        {% if block.settings.name == link.title %}
+        <div class="menuin mleft" {% if h == true %} style="width:{{block.settings.left_width | escape }}%"{% endif %}>	
+          
+          {% if block.settings.image1 != blank %}
+          <div>
+          {% if block.settings.link1 != blank %}<a href="{{ block.settings.link1 }}">{% endif %}
+          <img src="{{ block.settings.image1 | img_url:'master', format: 'pjpg' }}" alt="{{ block.settings.title1 }}"/>   <br>
+          <h4>{{ block.settings.title1 }}</h4>
+          {% if block.settings.link1 != blank %}</a>{% endif %}
+          </div>
+          {% endif %}
+
+          {% if block.settings.image2 != blank %}
+          <div>
+          {% if block.settings.link2 != blank %}<a href="{{ block.settings.link2 }}">{% endif %}
+          <img src="{{ block.settings.image2 | img_url:'master', format: 'pjpg' }}" alt="{{ block.settings.title2 }}" />   <br>
+          <h4>{{ block.settings.title2 }}</h4>
+          {% if block.settings.link2 != blank %}</a>{% endif %}
+          </div>
+          {% endif %}
+
+          {% if block.settings.image3 != blank %}
+          <div>
+          {% if block.settings.link3 != blank %}<a href="{{ block.settings.link3 }}">{% endif %}
+          <img src="{{ block.settings.image3 | img_url:'master', format: 'pjpg' }}" alt="{{ block.settings.title3 }}" />   <br>
+          <h4>{{ block.settings.title3 }}</h4>
+          {% if block.settings.link3 != blank %}</a>{% endif %}
+          </div>
+          {% endif %} 
+
+          {% if block.settings.image4 != blank %}
+          <div>
+          {% if block.settings.link4 != blank %}<a href="{{ block.settings.link4 }}">{% endif %}
+          <img src="{{ block.settings.image4 | img_url:'master', format: 'pjpg' }}" alt="{{ block.settings.title4 }}" />   <br>
+          <h4>{{ block.settings.title4 }}</h4>
+          {% if block.settings.link4 != blank %}</a>{% endif %}
+          </div>
+          {% endif %}
+
+          {% if block.settings.html != blank %}
+          {{ block.settings.html }}
+          {% endif %}
+        </div>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+
+        <ul class="site-nav__childlist-grid{% if s == true or h == true %} megam {% endif %}" {% if h == true %}  style="width:auto !important"{% endif %}>
+          {% if link.links != blank %}
+          {% for childlink in link.links %}
+          <li class="site-nav__childlist-item">
+            <a {% if childlink.handle == 'kitchen' %}onclick="pop()"{% endif %} href="{{ childlink.url }}" class="site-nav__link site-nav__child-link site-nav__child-link--parent"{% if childlink.active %} aria-current="page"{% endif %}>
+              {{ childlink.title | escape }}
+            </a>
+
+            {% if childlink.links != blank %}
+            <ul>
+              {% for grandchildlink in childlink.links %}
+              <li>
+                <a {% if childlink.handle == 'kitchen' %}onclick="pop()"{% endif %}href="{{ grandchildlink.url }}" class="site-nav__link site-nav__child-link"{% if grandchildlink.active %} aria-current="page"{% endif %}>
+                  {{ grandchildlink.title | escape }}
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+
+          </li>
+          {% endfor %}
+          {% endif %}
+        </ul>
+
+        {% for block in section.blocks %}           
+        {% if block.settings.position == 'right' %}	
+        {% if block.settings.name == link.title %}
+        <div class="menuin mright" {% if h == true %}  style="width:{{block.settings.right_width}}%"{% endif %}>	
+          
+          {% if block.settings.image1 != blank %}
+          <div>
+          {% if block.settings.link1 != blank %}<a href="{{ block.settings.link1 }}" title="{{ block.settings.title1 }}">{% endif %}
+          <img src="{{ block.settings.image1 | img_url:'master', format: 'pjpg' }}"  alt="{{ block.settings.title1 }}"/>   <br>
+          <h4>{{ block.settings.title1 }}</h4>
+          {% if block.settings.link1 != blank %}</a>{% endif %}
+          </div>
+          {% endif %}
+
+          {% if block.settings.image2 != blank %}
+          <div>
+          {% if block.settings.link2 != blank %}<a href="{{ block.settings.link2 }}" title="{{ block.settings.title2 }}">{% endif %}
+          <img src="{{ block.settings.image2 | img_url:'master', format: 'pjpg' }}" alt="{{ block.settings.title2 }}" />   <br>
+          <h4>{{ block.settings.title2 }}</h4>
+          {% if block.settings.link2 != blank %}</a>{% endif %}
+          </div>
+          {% endif %}
+
+          {% if block.settings.image3 != blank %}
+          <div>
+          {% if block.settings.link3 != blank %}<a href="{{ block.settings.link3 }}" title="{{ block.settings.title3 }}">{% endif %}
+          <img src="{{ block.settings.image3 | img_url:'master', format: 'pjpg' }}"  alt="{{ block.settings.title3 }}"/>   <br>
+          <h4>{{ block.settings.title3 }}</h4>
+          {% if block.settings.link3 != blank %}</a>{% endif %}
+          </div>
+          {% endif %} 
+
+          {% if block.settings.image4 != blank %}
+          <div>
+          {% if block.settings.link4 != blank %}<a href="{{ block.settings.link4 }}" title="{{ block.settings.title4 }}">{% endif %}
+          <img src="{{ block.settings.image4 | img_url:'master', format: 'pjpg' }}" alt="{{ block.settings.title4 }}" />   <br>
+          <h4>{{ block.settings.title4 }}</h4>
+          {% if block.settings.link4 != blank %}</a>{% endif %}
+          </div>
+          {% endif %}
+
+          {% if block.settings.html != blank %}
+          {{ block.settings.html }}
+          {% endif %}
+        </div>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+      </div>
+
+      {% else %}
+      {% for block in section.blocks %}           
+      {% if block.settings.position == 'left' %}	
+      {% if block.settings.name == link.title %}
+      <div class="menuin mleft" {% if h == true %}  style="width:{{block.settings.left_width}}%"{% endif %}>	
+        
+        {% if block.settings.image1 != blank %}
+        <div>
+        {% if block.settings.link1 != blank %}<a href="{{ block.settings.link1 }}" title="{{ block.settings.title1 }}">{% endif %}
+        <img src="{{ block.settings.image1 | img_url:'master', format: 'pjpg' }}"  alt="{{ block.settings.title1 }}"/>   <br>
+        <h4>{{ block.settings.title1 }}</h4>
+        {% if block.settings.link1 != blank %}</a>{% endif %}
+        </div>
+        {% endif %}
+        
+        {% if block.settings.image2 != blank %}
+        <div>
+        {% if block.settings.link2 != blank %}<a href="{{ block.settings.link2 }}" title="{{ block.settings.title2 }}">{% endif %}
+        <img src="{{ block.settings.image2 | img_url:'master', format: 'pjpg' }}"  alt="{{ block.settings.title2 }}"/>   <br>
+        <h4>{{ block.settings.title2 }}</h4>
+        {% if block.settings.link2 != blank %}</a>{% endif %}
+        </div>
+        {% endif %}
+        
+        {% if block.settings.image3 != blank %}
+        <div>
+        {% if block.settings.link3 != blank %}<a href="{{ block.settings.link3 }}" title="{{ block.settings.title3 }}">{% endif %}
+        <img src="{{ block.settings.image3 | img_url:'master', format: 'pjpg' }}"  alt="{{ block.settings.title3 }}"/>   <br>
+        <h4>{{ block.settings.title3 }}</h4>
+        {% if block.settings.link3 != blank %}</a>{% endif %}
+        </div>
+        {% endif %} 
+        
+        {% if block.settings.image4 != blank %}
+        <div>
+        {% if block.settings.link4 != blank %}<a href="{{ block.settings.link4 }}" title="{{ block.settings.title4 }}">{% endif %}
+        <img src="{{ block.settings.image4 | img_url:'master', format: 'pjpg' }}"  alt="{{ block.settings.title4 }}"/>   <br>
+        <h4>{{ block.settings.title4 }}</h4>
+        {% if block.settings.link4 != blank %}</a>{% endif %}
+        </div>
+        {% endif %}
+        
+        {% if block.settings.html != blank %}
+        {{ block.settings.html }}
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endif %}
+      {% endfor %}
+
+      <ul{% if s == true or h == true %} class="megam" {% endif %} {% if h == true %}  style="width:auto !important"{% endif %}>
+        {% for childlink in link.links %}
+        <li {% if childlink.active %}class="site-nav--active"{% endif %}>
+          <a href="{{ childlink.url }}" class="site-nav__link site-nav__child-link{% if forloop.last %} site-nav__link--last{% endif %}"{% if childlink.active %} aria-current="page"{% endif %}>
+            {{ childlink.title | escape }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+
+      {% for block in section.blocks %}           
+      {% if block.settings.position == 'right' %}	
+      {% if block.settings.name == link.title %}
+      <div class="menuin mright" {% if h == true %}  style="width:{{block.settings.right_width}}%"{% endif %}>	
+        
+        {% if block.settings.image1 != blank %}
+        <div>
+        {% if block.settings.link1 != blank %}<a href="{{ block.settings.link1 }}" title="{{ block.settings.title1 }}">{% endif %}
+        <img src="{{ block.settings.image1 | img_url:'master' , format: 'pjpg'}}"  alt="{{ block.settings.title1 }}"/>   <br>
+        <h4>{{ block.settings.title1 }}</h4>
+        {% if block.settings.link1 != blank %}</a>{% endif %}
+        </div>
+        {% endif %}
+        
+        {% if block.settings.image2 != blank %}
+        <div>
+        {% if block.settings.link2 != blank %}<a href="{{ block.settings.link2 }}" title="{{ block.settings.title2 }}">{% endif %}
+        <img src="{{ block.settings.image2 | img_url:'master', format: 'pjpg' }}"  alt="{{ block.settings.title2 }}"/>   <br>
+        <h4>{{ block.settings.title2 }}</h4>
+        {% if block.settings.link2 != blank %}</a>{% endif %}
+        </div>
+        {% endif %}
+        
+        {% if block.settings.image3 != blank %}
+        <div>
+        {% if block.settings.link3 != blank %}<a href="{{ block.settings.link3 }}" title="{{ block.settings.title3 }}">{% endif %}
+        <img src="{{ block.settings.image3 | img_url:'master', format: 'pjpg' }}"  alt="{{ block.settings.title3 }}"/>   <br>
+        <h4>{{ block.settings.title3 }}</h4>
+        {% if block.settings.link3 != blank %}</a>{% endif %}
+        </div>
+        {% endif %} 
+        
+        {% if block.settings.image4 != blank %}
+        <div>
+        {% if block.settings.link4 != blank %}<a href="{{ block.settings.link4 }}" title="{{ block.settings.title4 }}">{% endif %}
+        <img src="{{ block.settings.image4 | img_url:'master', format: 'pjpg' }}"  alt="{{ block.settings.title4 }}"/>   <br>
+        <h4>{{ block.settings.title4 }}</h4>
+        {% if block.settings.link4 != blank %}</a>{% endif %}
+        </div>
+        {% endif %}
+        
+        
+        {% if block.settings.html != blank %}
+        {{ block.settings.html }}
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+    </div>
+  </li>
+  {% else %}
+  <li {% if link.active %} class="site-nav--active"{% endif %}>
+    <a href="{{ link.url }}" class="site-nav__link site-nav__link--main"{% if link.active %} aria-current="page"{% endif %}>{{ link.title }}</a>
+
+    {% assign ss = false %}
+    {% assign hh = false %}
+
+    {% for block in section.blocks %}           
+    {% if block.settings.name == link.title %}
+    {% if block.settings.image1 != blank %}
+    {% assign ss = true %}
+    {% endif %}
+    {% if block.settings.html != blank %}
+    {% assign hh = true %}
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+
+    {% if ss == true or hh == true %} 
+    <div {% if ss == false and hh == false %} style="width:auto; max-width:100%"{% endif %} class="{% if ss == true and hh == false %} megamtop {% endif %} site-nav__dropdown{% if three_level_nav %} site-nav__dropdown--centered{% endif %}" id="SiteNavLabel-{{ child_list_handle }}">                  
+      {% for block in section.blocks %}           
+      {% if block.settings.position == 'left' %}	
+      {% if block.settings.name == link.title %}
+      <div class="menuin malone" {% if hh == true %} style="width:{{block.settings.left_width}}%"{% endif %}>	        
+        
+        {% if block.settings.image1 != blank %}
+        <div>
+        {% if block.settings.link1 != blank %}<a href="{{ block.settings.link1 }}" title="{{ block.settings.title1 }}">{% endif %}
+        <img src="{{ block.settings.image1 | img_url:'master', format: 'pjpg' }}" alt="{{ block.settings.title1 }}" />   <br>
+        <h4>{{ block.settings.title1 }}</h4>
+        {% if block.settings.link1 != blank %}</a>{% endif %}
+        </div>
+        {% endif %}
+        
+        {% if block.settings.image2 != blank %}
+        <div>
+        {% if block.settings.link2 != blank %}<a href="{{ block.settings.link2 }}" title="{{ block.settings.title2 }}">{% endif %}
+        <img src="{{ block.settings.image2 | img_url:'master', format: 'pjpg' }}"  alt="{{ block.settings.title2 }}"/>   <br>
+        <h4>{{ block.settings.title2 }}</h4>
+        {% if block.settings.link2 != blank %}</a>{% endif %}
+        </div>
+        {% endif %}
+        
+        {% if block.settings.image3 != blank %}
+        <div>
+        {% if block.settings.link3 != blank %}<a href="{{ block.settings.link3 }}" title="{{ block.settings.title3 }}">{% endif %}
+        <img src="{{ block.settings.image3 | img_url:'master', format: 'pjpg' }}" alt="{{ block.settings.title3 }}" />   <br>
+        <h4>{{ block.settings.title3 }}</h4>
+        {% if block.settings.link3 != blank %}</a>{% endif %}
+        </div>
+        {% endif %} 
+        
+        {% if block.settings.image4 != blank %}
+        <div>
+        {% if block.settings.link4 != blank %}<a href="{{ block.settings.link4 }}" title="{{ block.settings.title4 }}">{% endif %}
+        <img src="{{ block.settings.image4 | img_url:'master', format: 'pjpg' }}"  alt="{{ block.settings.title4 }}"/>   <br>
+        <h4>{{ block.settings.title4 }}</h4>
+        {% if block.settings.link4 != blank %}</a>{% endif %}
+        </div>
+        {% endif %}
+        
+        
+        {% if block.settings.html != blank %}
+        {{ block.settings.html }}
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  </li>
+  {% endif %}
+  {% endfor %}
+</ul>

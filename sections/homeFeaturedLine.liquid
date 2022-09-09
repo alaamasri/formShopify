@@ -1,0 +1,79 @@
+<section class="home-featured-line">
+  <div class="container">
+    <div class="row featured-line">
+      
+        
+        <div class="col-lg-6 col-md-6 col-xs-12 order-m-1">
+          <div class="featured-line-desc">
+            <h5>{{ section.settings.tag }}</h5>
+            <h1 class="home-main-h1"> {{ section.settings.title }}</h1>
+            <p> {{ section.settings.details }}</p>
+            {% if  section.settings.link %}
+            <a href="{{ section.settings.link }}" class="btn">
+              {{ section.settings.btn }}
+            </a>
+              {% endif %}
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-xs-12 order-m-0">
+          
+            <img class="r-zoom-in-out flip-m" src="{{ section.settings.featured_img | img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.tag }} {{ section.settings.title }}">
+            
+          
+        </div>
+        <div class="clearfix"></div>
+      
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Home Featured Line",
+    "settings": [
+	  {
+        "id": "featured_img",
+        "type": "image_picker",
+        "label": "Featured Image"
+      },
+      {
+        "id": "title",
+        "type": "text",
+        "label": "Title"
+      },
+      {
+        "id": "tag",
+        "type": "text",
+        "label": "Tag"
+      },
+      {
+        "id": "details",
+        "type": "textarea",
+        "label": "Details"
+      },  
+      {
+        "id": "btn",
+        "type": "text",
+        "label": "Button Label",
+        "default": "Shop Now"
+      },  
+      {
+        "id": "link",
+        "type": "url",
+        "label": "Button Link"
+      }
+	],
+    "presets": [
+      {
+        "name": "Home Featured Section",
+        "category": "Custom"        
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

@@ -1,0 +1,76 @@
+<section class="news">
+  <div class="news_main">
+    <div class="news_main_one">
+      <h4 class="right">{{ section.settings.heading }}</h4>
+      <h6 class="left">{{ section.settings.sub_heading }}</h6>
+      {%- assign formId = 'ContactFooter' -%}
+      {% form 'customer', id: formId, novalidate: 'novalidate' %}
+      {%- if form.posted_successfully? -%}
+      <p class="form-message form-message--success" tabindex="-1" data-form-status>
+        {{ 'general.newsletter_form.confirmation' | t }}
+      </p>
+      {%- endif -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <input required type="email"
+   
+             name="contact[email]"
+             id="{{ formId }}-email"
+             class=" input-group__field newsletter__input{% if form.errors %} input--error{% endif %}"
+             value="{{ form.email }}"
+             placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"
+             aria-label="{{ 'general.newsletter_form.email_placeholder' | t }}"
+             aria-required="true"
+             placeholder="Your-email@example.com"
+             required
+             autocorrect="off"
+             autocapitalize="off"
+             {% if form.errors %}
+             aria-invalid="true"
+             aria-describedby="{{ formId }}-email-error"
+             data-form-status
+             {% endif %}>
+
+      <button type="submit" class="btn newsletter__submit" name="commit" id="Subscribe">
+        <span class="newsletter__submit-text--large">{{ 'general.newsletter_form.submit' | t }}</span>
+      </button>  
+      {% if form.errors contains 'email' %}
+      <span id="{{ formId }}-email-error" class="input-error-message">
+        {% include 'icon-error' %} {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}.
+      </span>
+      {% endif %}
+      {% endform %}
+    </div>
+  </div>
+</section>
+{% schema %}
+  {
+    "name": "Home Newsletter",
+    "settings": [
+      {
+        "id": "heading",
+        "type": "text",
+        "label": "Heading",
+        "default": "Join Our Newsletter"
+      },  
+      {
+        "id": "sub_heading",
+        "type": "textarea",
+        "label": "Sub Heading",
+        "default": "Sign up to hear about the latest FORM collections."
+      }
+],
+	
+    "presets": [
+      {
+        "name": "Home Newsletter",
+        "category": "Custom"        
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

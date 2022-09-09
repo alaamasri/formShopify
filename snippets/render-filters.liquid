@@ -1,0 +1,243 @@
+<script>
+    function getUrlTags() {
+        var tagsUrlParameters = null;
+        var urlPath = window.location.pathname;
+
+        //if the url ends with '/' then remove it and continue
+        if (window.location.href.length == window.location.href.lastIndexOf('/') + 1) {
+            urlPath = urlPath.slice(0, -1);
+        }
+
+        tagsUrlParameters = urlPath.split("/").pop();
+
+        if (tagsUrlParameters) {
+            tagsUrlParameters = tagsUrlParameters.split('+');
+        }
+
+
+        // Remove collection name if exists
+        var currentCategory = window.collectionContext && window.collectionContext.current_collection && window.collectionContext.current_collection.handle;
+		var _Categoryindex = tagsUrlParameters.indexOf(currentCategory);
+        if (_Categoryindex > -1) {
+            tagsUrlParameters.splice(_Categoryindex, 1);
+        }
+
+        return tagsUrlParameters;
+    }
+
+    function renderFilters() {
+        var filters = window.collectionContext && window.collectionContext.current_collection && window.collectionContext.current_collection.filters;
+        var cat = [];
+	    var isAllCollectionsPage = collectionContext.current_collection.handle === 'all';
+
+        for (cat in filters) {
+            var divData = '<div class="shp_catdiv">';
+            // cat name console.log(cat);
+            divData += '<h6 class="accordion ac-title active">' + cat + '</h6><div class="tabin">';
+
+            for (var i = 0; i < filters[cat].length; i++) {
+                var itemName = filters[cat][i].name;
+                var itemTag = filters[cat][i].link;
+
+                if (filters[cat][i].hasColor) {
+                    var itemColor = 'background-color:#' + (filters[cat][i].colorCode || filters[cat][i].link.split('_')[1]);
+
+                    if (filters[cat][i].hasCombinedColor == true) {
+                        var itemColor1 = filters[cat][i].colorsCombination[0];
+                        var itemColor2 = filters[cat][i].colorsCombination[1];
+
+                        itemColor = '<span><span style="background-color:#' + itemColor1 +
+                            '"></span><span style="background-color:#' + itemColor2 + '"></span></span>'
+                        divData +=
+                            '<div class="cat_list cat_list_color"><input type="checkbox" name="col-filter" class="coll-filter hide" value="' +
+                            itemTag + '" id="' + itemTag + '"><label for="' + itemName +
+                            '" class="cat_tx cat_tx_color lbl-multi-color" data-link="' + itemTag + '">' + itemColor + '</label></div>';
+
+                    }else {
+                        if(filters[cat][i].hasPrintColor==true){
+                       	 var itemColor = 'background-image:url(' + filters[cat][i].printPath+')';
+                    	}
+                        
+                        divData +=
+                            '<div class="cat_list cat_list_color"><input type="checkbox" name="col-filter" class="coll-filter hide" value="' +
+                            itemTag + '" id="' + itemTag + '"><label for="' + itemName +
+                            '" class="cat_tx cat_tx_color" data-link="' + itemTag + '" style="' +
+                            itemColor + '"></label></div>';
+                    }
+
+                } else {
+                    divData +=
+                        '<div class="cat_list"><input type="checkbox" name="col-filter" class="coll-filter hide" value="' +
+                        itemTag + '" id="' + itemTag + '"><label for="' + itemName + '" class="cat_tx" data-link="' +
+                        itemTag + '">' + itemName + '</label></div>';
+                }
+
+            }
+
+            $('.category_div').prepend(divData);
+
+
+        }
+
+        // collectionFilters
+        var collectionFilters = window.collectionContext && window.collectionContext.collection_filters;
+        var item = [];
+
+        if (true) {
+        //if (collectionFilters && collectionFilters.length) {
+            var divData =
+                '<div class="shp_catdiv"><h6 class="accordion ac-title active">Product Category</h6><div class="tabin">';
+            var catType = window.collectionContext.current_collection.collection_type;
+          
+	        if(window.collectionContext.master_collection){
+              //Add Main category for the current collection
+              divData += '<div class="cat_list cat_list_main">';
+              divData += '<a class="active" href="' + window.collectionContext.all_collections[window.collectionContext.master_collection].link + '">' + window.collectionContext.all_collections[window.collectionContext.master_collection].title + '</a>';
+              divData += '</div>';
+			}
+          
+            for (var i = 0; i < collectionFilters.length; i++) {
+
+                var itemName = collectionFilters[i].filter_title;
+                var itemLink = collectionFilters[i].link;
+				var active=false; 
+				
+                if(collectionFilters[i].handle == window.collectionContext.current_collection.handle){
+                   active=true; 
+                }
+				
+             	divData += '<div class="cat_list '+(isAllCollectionsPage ? 'cat_list_main' : 'cat_list_tree')+'"><a'+ ((active) ? ' class="active"' : '')+' href="' + itemLink + '">' + itemName + '</a>';
+				active=false;
+				
+                if ((catType == 'Sub-Category') && (collectionFilters[i].handle == window.collectionContext
+                        .current_collection.parent_collection)) {
+
+                    divData += '<div class="cat_list_sub">';
+                    for (var j = 0; j < collectionFilters[i].sub_categories.length; j++) {
+                      if (window.collectionContext.current_collection.handle == collectionFilters[i].sub_categories[j].handle){
+                        active=true;
+                      }	
+                    
+                      divData += '<a'+ ((active) ? ' class="active"' : '')+' href="' + collectionFilters[i].sub_categories[j].link + '">' + collectionFilters[
+                            i].sub_categories[j].filter_title + '</a>';
+                      active=false;
+                    }
+                    divData += '</div></div>';
+
+
+                } else if (collectionFilters[i].handle == window.collectionContext.current_collection.handle ||
+                    collectionFilters[i].handle == catType) {
+
+                  	
+                    divData += '<div class="cat_list_sub">';
+                    for (var j = 0; j < collectionFilters[i].sub_categories.length; j++) {
+
+                        divData += '<a href="' + collectionFilters[i].sub_categories[j].link + '">' + collectionFilters[
+                            i].sub_categories[j].filter_title + '</a>';
+                    }
+                    divData += '</div></div>';
+
+
+                } else {
+                    divData += '</div>'
+                }
+
+            }
+          
+          	//Add Other Main Categories for other collections
+            for (var i = 0; i < window.collectionContext.main_collections.length; i++) {
+              var item = window.collectionContext.main_collections[i];
+              //skip if it's main collection for the current collection
+              if(window.collectionContext.master_collection && item.handle === window.collectionContext.all_collections[window.collectionContext.master_collection].handle){
+              	continue;
+              }
+              divData += '<div class="cat_list cat_list_main">';
+              divData += '<a href="' + item.link + '">' + item.title + '</a>';
+              divData += '</div>';
+            }
+          
+            $('.category_div').prepend(divData);
+        }
+
+
+        var selectedTags = getUrlTags();
+
+        $("h6.accordion").click(function (e) {
+            e.preventDefault();
+            $(this).siblings('.tabin').slideToggle();
+            $(this).toggleClass('active');
+
+        });
+
+        $(".cat_list label").click(function (e) {
+            e.preventDefault();
+
+            if ($(this).hasClass('active')) {
+
+                $(this).removeClass('active');
+                var index = selectedTags.indexOf($(this).attr('data-link'));
+                selectedTags.splice(index, 1);
+
+            } else {
+                $(this).addClass('active');
+                selectedTags.push($(this).attr('data-link'));
+
+            }
+
+            //finally you prepare the link
+            var urlWithTags = collectionContext.current_collection.url + "/" + selectedTags.join('+');
+          	//remove view all products option incase it was added
+            slate.utils.removeCollectionViewAllOption(true, function(){
+              window.location.href = urlWithTags;
+            });
+          
+          	return false;
+        });
+      
+        $('.shp_catdiv .cat_list.cat_list_tree a').click(function(){
+          var _href = $(this).attr('href');
+          //remove view all products option incase it was added
+          slate.utils.removeCollectionViewAllOption(true, function(){
+              window.location.href = _href;
+          });
+          return false;
+        });
+
+        // select all the selected items after rendering the filter  
+
+        if (selectedTags.length) {
+            getUrlTags().join(',').split(/\s*,\s*/).forEach(function (currentItem) {
+                $('label[data-link=' + currentItem + ']').addClass('active')
+            });
+          
+          	//add clear all button
+          	var divData = 
+                '<div class="shp_catdiv">'+
+				  '<div>'+
+                	'<span><svg style="vertical-align: bottom;width: 12px; margin-left: 5px;" aria-hidden="true" focusable="false" role="presentation" class="icon icon-close" viewBox="0 0 40 40"><path d="M23.868 20.015L39.117 4.78c1.11-1.108 1.11-2.77 0-3.877-1.109-1.108-2.773-1.108-3.882 0L19.986 16.137 4.737.904C3.628-.204 1.965-.204.856.904c-1.11 1.108-1.11 2.77 0 3.877l15.249 15.234L.855 35.248c-1.108 1.108-1.108 2.77 0 3.877.555.554 1.248.831 1.942.831s1.386-.277 1.94-.83l15.25-15.234 15.248 15.233c.555.554 1.248.831 1.941.831s1.387-.277 1.941-.83c1.11-1.109 1.11-2.77 0-3.878L23.868 20.015z" class="layer"></path></svg></span>'+
+            		'<a onclick="clearAllFilters()" style="vertical-align: bottom;padding-left: 14px;font-size: 14px;cursor:pointer;">Clear All</a>'+
+          		  '</div>'+
+		        '</div>';
+         	 $('.category_div').prepend(divData);
+        }
+
+
+    }
+  
+  	function clearAllFilters(){
+      var selectedTags = getUrlTags();
+	  var urlWithTags = collectionContext.current_collection.url;
+      //remove view all products option incase it was added
+      slate.utils.removeCollectionViewAllOption(true, function(){
+        window.location.href = urlWithTags;
+      });
+ 	}
+
+    $(function () {
+        renderFilters();
+
+        if (window.location.href.indexOf('+') > -1) {
+            $(window).scrollTop($('#Collection').offset().top - 100);
+        }
+    });
+</script>

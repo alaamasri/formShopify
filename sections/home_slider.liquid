@@ -1,0 +1,80 @@
+<section class="landing">
+  <div class="landing_slider">
+    <h5>{{ section.settings.heading }} </h5>
+    <div class="slider">
+      {% for block in section.blocks %}
+      <div class="landing_main_one" style="background-image: url({{ block.settings.collagen_beneficial| img_url: 'master', format: 'pjpg' }});">
+        <div class="comming_soon splash" data-delighter >
+          <div class="main-title" data-delighter class="right">{{ block.settings.title }}</div>
+          <h4 data-delighter class="left">{{ block.settings.tag }}</h4>
+          <a  data-delighter="start:1" href="{{ block.settings.link }}" class="btn bottom" title="{{ block.settings.title }}">
+            {{ block.settings.btn }}
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% schema %}
+  {
+    "name": "Home Slider",
+    "settings": [
+      {
+        "id": "heading",
+        "type": "text",
+        "label": "SHARE title ",
+        "default": "SHARE"
+      }
+	],
+	"blocks": [
+      {
+        "type": "repeat",
+        "name": "Slider",
+        "settings": [
+ 
+		  {
+            "id": "collagen_beneficial",
+            "type": "image_picker",
+        	"label": "Banner background Image"
+          },    
+		  {
+            "id": "title",
+            "type": "text",
+        	"label": "Banner Title",
+        	"default": "A Visionary Spirit"
+          },  
+		  {
+            "id": "tag",
+            "type": "textarea",
+        	"label": "Banner Tag Line",
+        	"default": "FORMing Excellence in Image Wear"
+          },  
+		  {
+            "id": "btn",
+            "type": "text",
+        	"label": "Button Label",
+        	"default": "discover"
+          },  
+		  {
+            "id": "link",
+            "type": "url",
+        	"label": "Button Link"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Home Slider",
+        "category": "Custom"        
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

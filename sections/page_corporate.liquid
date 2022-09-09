@@ -1,0 +1,463 @@
+<section class="about_page">
+  <div class="abput_page_main" style="background-image: url({{ section.settings.main_banner| img_url: 'master' }});">
+    <div class="container">
+      <div class="about_page_heding">
+        <h2>{{ section.settings.heading }}</h2>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="clearfix"></div>
+
+<section class="service_top">
+  <div class="service_bg">
+    <div class="service_top" >
+      <div class="shirt_left right" >
+        <img src="{{ section.settings.kitchen_shirt_image| img_url: 'master' }}">
+      </div>
+      <div class="services_txt_mid left" >
+        <h2>{{ section.settings.kitchen_title }}</h2>
+        <p>{{ section.settings.kitchen_details }}</p>
+        <div class="servic_link">
+          <a class="h_menu" href="{{ section.settings.kitchen_link }}"> {{ section.settings.kitchen_btn }}
+            <span>
+              <img src="{{'service-link.png' | asset_url }}">
+            </span>
+          </a>
+        </div>
+      </div>
+      <div class="hidden-xs">
+        <div class="serive_right_page">
+          <img src="{{ section.settings.kitchen_dress | img_url: 'master' }}">
+        </div>
+      </div>
+      <div class="visible-xs">
+        <div class="serive_right_page">
+          <img src="{{ section.settings.kitchen_dress_mobile  | img_url: 'master' }}">
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</section>
+
+<section class="service_two">
+  <div class="container">
+    <div class="service_two_one">
+      <div class="shirt_service">
+        {% for block in section.blocks %}
+        {% if block.type == 'service_one' %}
+        {% capture thecycle %}{% cycle 'odd', 'even' %}{% endcapture %}
+        {% if thecycle == 'odd' %}
+        <div class="">
+          <div class="shirt_service_one">
+            <a  href="{{ block.settings.link_one }}">
+              <img class="hidden-xs" src="{{ block.settings.service_one_desktop | img_url: 'master' }}">
+              <img class="visible-xs" src="{{ block.settings.service_one_mobile | img_url: 'master' }}">
+              <div class="shirt_txt">
+                <h4>{{ block.settings.service_name }}</h4>
+              </div>
+            </a>
+          </div>
+        </div>
+        {% else %}        
+        <div class="">
+          <div class="shirt_service_two">
+            <a href="{{ block.settings.link_one }}">
+              <img class="hidden-xs" src="{{ block.settings.service_one_desktop | img_url: 'master' }}">
+              <img class="visible-xs" src="{{ block.settings.service_one_mobile | img_url: 'master' }}">
+              <div class="shirt_txt">
+                <h4>{{ block.settings.service_name }}</h4>
+              </div>
+            </a>
+          </div>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+      </div>
+      <div class="shirt_service_main_one">
+        {% for block in section.blocks %}
+        {% if block.type == 'service_two' %}
+        {% capture thecycle %}{% cycle 'odd', 'even' %}{% endcapture %}
+        {% if thecycle == 'odd' %}
+        <div class="">
+          <div class="shirt_service_one">
+            <a href="{{ block.settings.link_two }}">
+              <img class="hidden-xs" src="{{ block.settings.service_two_desktop | img_url: 'master' }}">
+              <img class="visible-xs" src="{{ block.settings.service_two_mobile | img_url: 'master' }}">
+              <div class="shirt_txt">
+                <h4>{{ block.settings.service_name }}</h4>
+              </div>
+            </a>
+          </div>
+        </div>
+        {% else %}
+        <div class="">
+          <div class="shirt_service_two">
+            <a href="{{ block.settings.link_two }}">
+              <img class="hidden-xs" src="{{ block.settings.service_two_desktop | img_url: 'master' }}">
+              <img class="visible-xs" src="{{ block.settings.service_two_mobile | img_url: 'master' }}">
+              <div class="shirt_txt">
+                <h4>{{ block.settings.service_name }}</h4>
+              </div>
+            </a>
+          </div>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+<div class="clearfix"></div>
+
+<section class="kitchen_page">
+  <div class="container">
+    <div class="jackets">
+      <h4>{{ section.settings.by_style_title }}</h4>
+    </div>
+    <img src="{{ section.settings.by_style_image | img_url: 'master' }}" />
+    {% comment %}
+    <div class="kitchen_page_main">
+      {% assign style =  1 %}
+      {% for block in section.blocks %}
+      {% if block.type == 'by_style' %}        
+      <div class=" {% if style == 1 %}  kitchen_page_main_one {% endif %}  {% if style == 2 %}kitchen_page_main_two{% endif  %} {% if style == 3 %}kitchen_page_main_three {% endif %}  {% if style == 4 %} kitchen_page_main_four {% endif %}">
+        <img src="{{ block.settings.short_by_image | img_url: 'master' }}">
+        <div class="shirt_txt">
+          <h4>
+            <a href="{{ block.settings.short_by_link }}" class="h_menu">{{ block.setitngs.short_by }}</a>
+          </h4>
+        </div>
+      </div>             
+      {% assign style = style | plus: 1 %}
+      {% endif %}
+      {% endfor %}      
+    </div>
+    {% endcomment %}
+  </div>
+</section>
+
+<section class="more_collection">
+  <div class="more_collection_main">
+    <div class="container">
+      <div class="row">
+        <div class="this_collection">
+          <h4>{{ section.settings.our_service }}</h4>
+        </div>
+        <div class="collection_slider">
+
+          {%- assign collection_me = collections[section.settings.collection_select] -%}      
+          {% assign s = 1 %}
+          {% for product in collection_me.products  %}
+          {% assign checkcolor = false %}
+          {% assign checksize = false %}
+
+          {% for option in product.options_with_values %}
+            {% if option.name == 'Color' %}
+              {% assign checkcolor = true %}
+            {% endif %}
+
+            {% if option.name == 'Size' %}
+              {% assign checksize = true %}
+            {% endif %}
+          {% endfor %}
+
+          <div class="col-3 col-md3 col-sm-3 col-xs-12">
+            <div class="collection_one_slid">
+              <div class="plp_image_main">
+                <div id="sh{{s}}" class="collection_img">
+                  {% assign images = false %}
+
+                  {% comment %}{% capture the_snippet_fave_icon %}{% include 'ssw-widget-faveicon' with product.id %}{% endcapture %}
+                  {% unless the_snippet_fave_icon contains 'Liquid error' %}
+                  {{ the_snippet_fave_icon }}
+                  {% endunless %}
+                  {% endcomment %}
+
+                  <a href="{{ product.url | within: collection }}">
+                    {% for image in product.images %}
+                    {% for variant in image.variants %}
+                    {% assign images = true %}	 
+                    <img id="{{ variant.id }}" class="lazyload proimg" src="{{ image.src | img_url:'grande' }}" 
+                         data-sizes="auto"
+                         alt="{{ image.alt | escape }}"
+                         />
+                    {% endfor %}
+
+                    {% if forloop.last == true %}
+                    <div class="secimg" style="background:url({{ image.src | img_url:'grande' }}) no-repeat"></div>
+                    {% endif %}
+
+                    {% endfor %}
+                  </a>
+
+                  {% if images == false %}
+                  <a href="{{ product.url | within: collection }}">
+                    <img class="lazyload" src="{{ product.featured_image.src | img_url:'grande' }}" data-sizes="auto" alt="" />  
+                  </a>
+                  {% endif %}
+                </div>
+
+                <div class="home_product_img_hover one_main_hover">
+                  <div class="shop_btn">
+                    <a href="{{ product.url }}" class="btn">
+                      SHOP NOW
+                    </a>
+                  </div>    
+                </div>
+              </div>  
+
+              <h4><a href="{{ product.url }}">{{ product.title }}</a></h4>
+
+              <h5>{% include 'product-price', variant: product.selected_or_first_available_variant %}</h5>
+
+              <div id="sizz{{s}}" class="lrft colsize">                            
+                <div class="cart_size hide">
+                  <form class="procart procart{{s}} hide" method="post" action="/cart/add">  
+                    <input type="hidden" name="id" id="varid{{s}}" value="{{ product.variants.first.id }}" />
+                    <select id="prosel{{s}}" class="hide">
+                      {% for variant in product.variants %}      
+                      <option  data-val="{{ variant.price | money }} {% if variant.compare_at_price > variant.price %}<s>{{ variant.compare_at_price | money }}</s>{% endif %}" value="{{ variant.id }}">{{ variant.title | handle }}</option>
+                      {% endfor %}
+                    </select>
+
+                    <button type="submit">ADD TO CART</button>              
+                    {% if checksize == true %}<span onclick="showsize({{s}})"><i class="fas fa-chevron-down"></i></span>{% endif %}
+                  </form>
+                </div>
+
+                {% if checkcolor == true %}
+                <div class="cart_size_in" id="showsize{{s}}">
+                  <ul class="swSize swatch">
+                    {% for option in product.options_with_values %}
+                    {% if option.name == 'Color' %}
+                    <script>
+                      $(document).ready(function(){
+                        {% if option.name == "Color" %}
+                        $('#procol{{s}}').val('{{ value | handle }}');
+                          {% endif %}
+                          {% if option.name == "Size" %}
+                          //$('#prosiz{{s}}').val('{{ value | handle }}');
+                          {% endif %}
+                          });
+                    </script>
+                    {% for value in option.values %}  
+                    {% capture checksizelength %} {{ forloop.length }} {% endcapture %}
+                    {% assign chksilen = checksizelength  | plus: 0 %}
+
+                    {% if forloop.first %}
+                    {% capture checksizefirstname %}{{ value | handle }}{% endcapture %}	
+                    {% endif %}
+
+                    <li class="color swatch-element {{ value | handle }}" onclick="getswval('{{ value | handle }}', {{s}}, {{forloop.index}}, 'Size', '{{ value }}')" data-value="{{ value | escape }}">
+                      <div class="tooltip">{{ value }}</div>
+                      <input class="hide" data-value="{{swatch}}" id="swatch-{{ option_index }}-{{ value | handle }}" type="radio" name="option-{{ option_index }}" value="{{ value | escape }}" {% if chksilen == 1 %}{% if forloop.first %} checked{% endif %}{% endif %} {% unless variant.available %}disabled{% endunless %} />
+                      <label id="siz{{forloop.index}}{{s}}" class="swlabel {% if chksilen == 1 %}{% if forloop.index == 1 %}active{% endif %}{% endif %}" for="swatch-{{ option_index }}-{{ value | handle }}" style="background-color: {{ value | split: ' ' | last | handle }}; background-image: url({{ value | handle | append: '.png' | asset_url }})"></label>      
+
+                      {% for variant in product.variants %} 
+                      {% assign values = variant.options[0] %}
+
+                      {% if values == value %}
+                      <span class="hide">{{ variant.price | money }} {% if variant.compare_at_price > variant.price %}<s>{{ variant.compare_at_price | money }}</s>{% endif %}</span>      
+                      {% endif %}
+                      {% endfor %}
+                    </li>
+                    {% endfor %}
+
+                    <input type="hidden" id="chksizlenth" value="{{chksilen}}" />
+                    {% if chksilen == 1 %}
+                    <script>
+                      $(document).ready(function(){
+                        $('#prosiz{{s}}').val('{{ checksizefirstname }}');
+
+                          $('.procart{{s}}').find('button').show();
+                          $('#selectsize{{s}}').hide();
+                          });
+                    </script>
+                    {% endif %}
+
+                    {% endif %}
+                    {% endfor %}
+                  </ul> 
+                </div>
+                {% endif %} 
+
+                <input type="hidden" id="procol{{s}}" value="" />
+                <input type="hidden" id="prosiz{{s}}" value="" /> 
+              </div>
+            </div>
+          </div>
+          {% assign s = s | plus:1 %}
+          {% endfor %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Page Corporate",
+    "settings": [
+      {
+        "id": "main_banner",
+        "type": "image_picker",
+        "label": "Main Banner Image"
+      },    
+      {
+        "id": "heading",
+        "type": "text",
+        "label": "Main Heading",
+        "default": "Kitchen"
+      },
+      {
+        "id": "kitchen_shirt_image",
+        "type": "image_picker",
+        "label": "Kitchen Shirt Image"
+      },    
+      {
+        "id": "kitchen_title",
+        "type": "text",
+        "label": "Kitchen Title",
+        "default": "Kitchen"
+      },  
+      {
+        "id": "kitchen_details",
+        "type": "textarea",
+        "label": "Kitchen Details",
+        "default": "Timeless and superbly tailored styles for servers offer the perfect foundational elements for image wear. The Service collection is inspired by architectural and industrial elegance, striking the perfect balance with more customized, signature details. Each garment is created with premium textiles and meticulous artisanal quality and care, and is therefore able to withstand the rigorous demands of day-to-day use without sacrificing beauty and presentation."
+      },  
+      {
+        "id": "kitchen_btn",
+        "type": "text",
+        "label": "Kitchen btn Label",
+        "default": "SEE THIS PRODUCT "
+      },  
+      {
+        "id": "kitchen_link",
+        "type": "url",
+        "label": "Button Link"
+      },
+      {
+        "id": "kitchen_dress",
+        "type": "image_picker",
+        "label": "Kitchen Dress Image"
+      },
+      {
+        "id": "kitchen_dress_mobile",
+        "type": "image_picker",
+        "label": "Kitchen Dress Image Mobile"
+      },
+      {
+        "id": "by_style_title",
+        "type": "text",
+        "label": "By Style Title",
+        "default": "jackets by style"
+      },
+	  {
+        "id": "by_style_image",
+        "type": "image_picker",
+        "label": "By Style Image"
+      },
+      {
+        "id": "our_service",
+        "type": "text",
+        "label": "Our Service Product ",
+        "default": " Our service products"
+      },
+      {
+        "id": "collection_select",
+        "type": "collection",
+        "label": "Select Collection"
+      }			
+],
+	"blocks": [
+      {
+        "type": "service_one",
+        "name": "Service One",
+        "settings": [
+          {
+          "id": "service_one_desktop",
+          "type": "image_picker",
+          "label": "Service One Desktop"
+          },    
+          {
+          "id": "service_one_mobile",
+          "type": "image_picker",
+          "label": "Service One Mobile Image"
+          },	
+          {
+          "id": "service_name",
+          "type": "text",
+          "label": "Service Name",
+          "default": "Apron"
+          },	
+          {
+          "id": "link_one",
+          "type": "url",
+          "label": "Link"
+          }
+        ]
+      },
+	   {
+        "type": "service_two",
+        "name": "Service Two",
+        "settings": [
+ 
+          {
+          "id": "service_two_desktop",
+          "type": "image_picker",
+          "label": "Service Two Desktop"
+          },    
+          {
+          "id": "service_two_mobile",
+          "type": "image_picker",
+          "label": "Service Two Mobile Image"
+          },	
+          {
+          "id": "service_name",
+          "type": "text",
+          "label": "Service Name",
+          "default": "Apron"
+          },	
+          {
+          "id": "link_two",
+          "type": "url",
+          "label": "Link"
+          }
+        ]
+      },
+	  {
+        "type": "by_style",
+        "name": "By Style",
+        "settings": [
+ 
+          {
+          "id": "short_by_image",
+          "type": "image_picker",
+          "label": "Short By Image"
+          },
+	      {
+            "id": "short_by",
+            "type": "text",
+        	"label": "Short By BTN",
+        	"default": "premium"
+          },  
+		  {
+            "id": "short_by_link",
+            "type": "url",
+        	"label": "Button Link"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+{% stylesheet %}
+{% endstylesheet %}
+{% javascript %}
+{% endjavascript %}

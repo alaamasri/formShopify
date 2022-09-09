@@ -1,0 +1,252 @@
+<div class="innerpage" style="padding-top:0;">
+  <img src="https://cdn.shopify.com/s/files/1/0363/6900/6724/files/bannerTemp.jpg?v=1662390803" style="width:100%;">
+  <div class="container">   
+    
+    {% section 'homeFeaturedLine'%}
+    {% section 'homeProductFeatures'%}
+    {% section 'homeCollectionsNew'%}
+
+
+
+    
+    <div class="rte">
+      {{ page.content }}
+    </div>
+  </div> 
+
+
+  
+  
+  <img src="https://cdn.shopify.com/s/files/1/0363/6900/6724/files/homeTemp.jpg?v=1662391105" style="width:100%">
+<style>
+  
+  .home-product-features{margin-bottom:40px;}
+ .home-featured-line {margin-top:100px;}
+  .featured-line{display:flex;align-items:center; margin-bottom:80px;}
+  .featured-line-desc.home-features-desc {
+  padding-left:65px;
+}
+ .product-features-brief 
+  {
+    font-size: 18px;
+    color: #4e5151;
+    line-height: 33px;
+    max-width: 670px;
+    display:block;
+    font-weight: 300;
+    margin:0 auto;
+    padding-bottom:50px;
+    }
+.featured-line h2.feature-title{
+  font-size:30px;
+  text-transform:initial;
+  font-family: 'Avenir LT Std';
+}
+  .featured-line-full .wrapper{
+    position:relative;
+  }
+  .featured-line-full .featured-line-desc {
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    max-width:50%;
+    height:fit-content;
+    margin:auto;
+    color:#fff;
+    padding-left:120px;
+    z-index:1;
+  }
+  .featured-line-full .featured-line-desc h2,.featured-line-full .featured-line-desc p{color:#fff;}
+  .featured-line-full  .wrapper:before{content:"";background:#000;opacity:.2;position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;}
+  .interactive-features .wrapper{
+           position:relative;
+         }
+        .interactive-features .point{
+         width: 14px;
+          height: 14px;
+          position: absolute;
+          background: #4e5151;
+          top:-20px;
+          left:0;
+          border-radius: 50%;
+          cursor: pointer;
+        }
+       .interactive-features .point:after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    display: block;
+    border: 2px solid #4e5151;
+    border-radius: 50%;
+    transform: translate(-3px,-3px);
+}
+  .interactive-features .point:before{
+    content:'';
+    width:100px;
+    border-top: 1px #4e5151 dashed;
+    height:1px;
+    top: -37px;
+    left:0;
+    position:absolute;
+    transform:rotateZ(-45deg);
+    transition:opacity .3s,height .3s;
+    opacity:0;
+        visibility:hidden;
+ 
+}
+  .interactive-features .point span{
+        position: absolute;
+    top: -99px;
+    left: 85px;
+    color: #4e5151;
+    min-width: 100px;
+    padding-left: 6px;
+    border-bottom: 1px dashed #4e5151;
+    transition:opacity .3s,height .3s;
+    opacity:0;
+    visibility:hidden;
+        height: 28px;
+    line-height: 27px;
+  }
+  .interactive-features .point{
+    transition:background .3s;
+  }
+      .interactive-features .point.point-ltr:before{
+    
+    left:initial;
+    right:0;
+    transform:rotateZ(45deg);
+}
+  .interactive-features .point.point-ltr span{
+      left:auto;
+    right: 85px;
+    padding-left: 3px;
+      padding-right:3px;
+  }
+  .interactive-features .point:hover{background:rgba(78,81,81,.85)}
+  .interactive-features .point:hover:before,.interactive-features .point:hover span{
+    opacity:1;
+    visibility:visible;
+  }
+  @media screen and (max-width:991px){
+    .featured-line{flex-wrap:wrap}
+    .order-m-0{order:0}
+    .order-m-1{order:1}
+    .flip-m{transition:initial !important;transform:rotateZ(180deg) rotateX(180deg) !important}
+    .featured-line-desc{padding: 70px 30px;}
+    .product-page-features .featured-line-desc{
+      padding: 40px 15px 0;
+    position: relative;
+    max-width: initial;
+    height: initial;
+    }
+    .product-page-features  .featured-line-full .wrapper:before{
+      display:none;
+    }
+    .featured-line-full .featured-line-desc h2, .featured-line-full .featured-line-desc p{color:#4e5151}
+    .product-page-features .featured-line-desc h2{padding-bottom: 8px;}
+    
+  }
+  @media screen and (max-width:767px){
+    .featured-line-desc {
+    padding: 50px 10px !important;
+}
+    .product-page-features .featured-line-desc{padding-bottom:0 !important;}
+    .featured-line{margin-bottom:40px;}
+    .mosaic-collections .wrapper {
+    
+    height: initial;
+    padding-top: 100%;
+    }
+    .mosaic-collections .wrapper .info.info-left{width:100%;}
+  }
+  @media screen and (max-width:480px){
+    .featured-line h1.home-main-h1, .featured-line h2{
+          font-size: 34px;
+          line-height: 1.2;
+    }
+    .mosaic-collections .wrapper .info .cat-title{
+      margin: 0 0 14px 0;
+    
+    font-size: 34px;
+    }
+    .product-page-features .featured-line-desc h2 {
+    padding-bottom: 15px;
+}
+.interactive-features .point span{  
+      top: -51px;
+    left: 42px;
+    min-width: 95px;
+  font-size:13px;
+  height: 25px;
+    line-height: 25px;
+    }
+    .interactive-features .point:before{
+          width: 38px;
+    top: -13px;
+    left: 8px;
+    }
+       .interactive-features .point.point-ltr:before{
+        left:auto;
+    right: 8px;
+    transform:rotateZ(45deg);
+}
+  .interactive-features .point.point-ltr span{
+        
+     
+    left: auto;
+    right:42px;
+    
+  
+  }
+  }
+</style>
+  <script>
+
+  <!--Script that fixes of screen points-->
+  function pointPosition(){
+
+    
+    if ($(window).width() < 991) {
+var screen = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+
+
+$('.point span').each(function(){
+     p = $(this).offset();
+     pr=p.left+$(this).width();
+     pl= p.left+$(this).width();
+     
+      //horizontal
+    if (p.left < 0 || p.left+$(this).width() > $(window).width()){
+        
+        if(p.left < $(this).parents('.featured-line').position().left && $(this).parent().hasClass('point-ltr')){
+            $(this).parent().removeClass('point-ltr')
+        } 
+        else if( p.left+$(this).width() > $(window).width() &&  !$(this).parent().hasClass('point-ltr')){$(this).parent().addClass('point-ltr')}
+
+        // if($(this).parent().hasClass('point-ltr')){
+        //     
+        // }
+        // else{
+        //     $(this).parent().addClass('point-ltr')
+        // }
+    
+    }
+    
+  
+
+    
+
+})};
+    
+  }
+  $(function(){
+pointPosition();
+
+  })
+  $(window).on('resize', function(){
+    pointPosition();
+});
+
+</script>

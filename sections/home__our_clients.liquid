@@ -1,0 +1,62 @@
+<section class="clients ">
+  <div class="container">
+    <div class="clients_main ">
+      <h4>{{ section.settings.heading }}</h4>
+      <div class="row">
+        {% for block in section.blocks %}
+        <div class=" col-lg-2 col-md-2 col-sm-2 col-xs-6 ">
+          <div class="clint_logo_main zoom">
+            <div class="clients_logo">
+              {% if block.settings.link != blank %}<a target="_blank" href="{{ block.settings.link }}">{% endif %}
+                <img src="{{ block.settings.clients | img_url: 'master' }}">
+              {% if block.settings.link != blank %}</a>{% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Home Our Clients",
+    "settings": [
+        {
+          "id": "heading",
+          "type": "text",
+          "label": "Heading ",
+          "default": "some of our clients"
+        }
+	],
+	"blocks": [
+      {
+        "type": "repeat",
+        "name": "Clients",
+        "settings": [
+		  {
+            "id": "clients",
+            "type": "image_picker",
+        	"label": "Clients Image"
+          },
+	      {
+            "id": "link",
+            "type": "url",
+        	"label": "Button Link"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Home Our Clients",
+        "category": "Custom"        
+      }
+    ]
+  }
+{% endschema %}
+{% stylesheet %}
+{% endstylesheet %}
+{% javascript %}
+{% endjavascript %}

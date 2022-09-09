@@ -1,0 +1,156 @@
+<section class="about_page">
+  <div class="abput_page_main" style="background-image: url({{ section.settings.main_banner| img_url: 'master' }});">
+    <div class="container">
+      <div class="about_page_heding">
+        <h2>{{ section.settings.heading }}</h2>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class=" sinnerpage">
+    <div class="">
+      <div class="">
+        <div class="text-center">
+          &nbsp;
+        </div>
+
+        {% if page.content.size > 0 %}
+        <div class="rte">
+          {{ page.content }}
+        </div>
+        {% endif %}
+        
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="contact_us_div " data-delighter>
+              <div class="address_div " data-delighter>
+                <img src="{{ 'add_logo-1.png' | asset_url }}"> 
+                <h3>Address</h3>
+                <p>{{ section.settings.address }} </p>
+              </div>
+
+              <div class="phone_div">
+                <img src="{{ 'add_phn.png'  | asset_url }}">  
+                <h3>Phone</h3>
+                <h4>
+                  <span>T / </span>
+                  <a class="h_menu" href="tel:{{ section.settings.telephone }}">{{ section.settings.telephone }}</a>
+                  <br>
+                  <span>F /</span>
+                  <a class="h_menu" href="tel:{{ section.settings.mobile }}" > {{ section.settings.mobile }}</a>
+                </h4>
+              </div>
+
+              <div class="mail_div " data-delighter>
+                <img src="{{ 'add_msg.png' | asset_url }}">  
+                <h3>Mail</h3>
+                <p>
+                  <a class="h_menu" href="mailto:{{ section.settings.mail_id }}">{{ section.settings.mail_id }}</a>
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="contact-form form-vertical contact_div">
+              <div class="message_div">
+              <h4>Send A Message</h4>
+              <h6>You can contact us using the from below</h6>
+              </div>
+              {%- assign formId = 'ContactForm' -%}
+              {% form 'contact', id: formId %}
+              {% include 'form-status', form_id: formId %}
+
+              <div class="grid grid--half-gutters">
+                <div class="grid__item medium-up--one-half">
+                  <label for="{{ formId }}-name">{{ 'contact.form.name' | t }}</label>
+                  <input required type="text" id="{{ formId }}-name" name="contact[name]" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+                </div>
+                <div class="grid__item medium-up--one-half">
+                  <label for="{{ formId }}-email">{{ 'contact.form.email' | t }} <span aria-hidden="true">*</span></label>
+                  <input required
+                         type="email"
+                         id="{{ formId }}-email"
+                         name="contact[email]"
+                         autocorrect="off"
+                         autocapitalize="off"
+                         value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                         aria-required="true"
+                         {%- if form.errors contains 'email' -%}
+                         class="input--error"
+                         aria-invalid="true"
+                         aria-describedby="{{ formId }}-email-error"
+                         {%- endif -%}
+                         >
+                  {%- if form.errors contains 'email' -%}
+                  <span id="{{ formId}}-email-error" class="input-error-message">{% include 'icon-error' %} {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}.</span>
+                  {%- endif -%}
+                </div>
+              </div>
+
+              <label for="{{ formId }}-company">Company</label>
+              <input type="text" id="{{ formId }}-company" name="contact[company]">
+
+              <label for="{{ formId }}-phone">{{ 'contact.form.phone' | t }}</label>
+              <input type="tel" id="{{ formId }}-phone" name="contact[phone]" pattern="[0-9\-]*" value="{% if form[phone] %}{{ form[phone] }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+
+              <label for="{{ formId }}-message">{{ 'contact.form.message' | t }}</label>
+              <textarea required rows="4" id="{{ formId }}-message" name="contact[body]">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+
+              <input type="submit" class="btn" value="{{ 'contact.form.submit' | t }}">
+
+              {% endform %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Contact Us",
+    "settings": [
+      {
+        "id": "main_banner",
+        "type": "image_picker",
+        "label": "Main Banner Image"
+      },    
+      {
+        "id": "heading",
+        "type": "text",
+        "label": "Main Heading",
+        "default": "Contact Us"
+      },    
+      {
+        "id": "address",
+        "type": "textarea",
+        "label": "Address"
+      },    
+      {
+        "id": "telephone",
+        "type": "text",
+        "label": "Telephone"
+      },    
+      {
+        "id": "mobile",
+        "type": "text",
+        "label": "Mobile"
+      },    
+      {
+        "id": "mail_id",
+        "type": "text",
+        "label": "Mail Id"
+      }				
+	]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

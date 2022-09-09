@@ -1,0 +1,113 @@
+{% if collection.image %}
+  {%- assign collection_image = collection.image -%}
+{% elsif collection.products.first and collection.products.first.images != empty %}
+  {%- assign collection_image = collection.products.first.featured_image -%}
+{% else %}
+  {% assign collection_image = blank %}
+{% endif %}
+{% comment %}
+<div class="collection-grid-item ">
+  <a href="{% if collection.products == empty %}#{% else %}{{ collection.url }}{% endif %}" class="collection-grid-item__link">
+    {% unless collection_image == blank %}
+      <div class="collection-grid-item__overlay box ratio-container lazyload js"
+        data-bgset="{% include 'bgset', image: collection_image , format: 'pjpg' %}"
+        data-sizes="auto"
+        data-parent-fit="cover"
+        style="background-image: url('{{ collection_image | img_url: '300x300', format: 'pjpg' }}')">
+      </div>
+      <noscript>
+        <div class="collection-grid-item__overlay" style="background-image: url('{{ collection_image | img_url: '1024x1024', format: 'pjpg' }}')"></div>
+      </noscript>
+    {% else %}
+      {% if collection == empty %}
+        <div class="collection-grid-item__overlay">
+          {% capture current %}{% cycle 1, 2, 3 %}{% endcapture %}
+          {{ 'collection-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {% else %}
+        <div class="collection-grid-item__overlay" style="background-image: url('{{ collection_image | img_url: '1024x1024', format: 'pjpg' }}')"></div>
+      {% endif %}
+    {% endunless %}
+    <div class="collection-grid-item__title-wrapper">
+      <div class="collection-grid-item__title h3">
+        {% if collection.title == blank %}
+          {{ 'homepage.onboarding.collection_title' | t }}
+        {% else %}
+          {{ collection.title }}
+        {% endif %}
+      </div>
+    </div>
+  </a>
+</div>
+{% endcomment %}
+{% capture thecycle %}{% cycle 'odd', 'even' %}{% endcapture %}
+{% if thecycle == 'odd' %}
+<div class="difference_main">
+  <div class="difference_img_one">
+    <img src="{{ 'about-page-left-bg.png' | asset_url  | format: 'pjpg'}}">
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <div class="difference_right   ">
+          <img src="{{ collection_image | img_url: 'master', format: 'pjpg' }}" class="r-zoom-in-out" alt="{{ collection.title }}"/>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <div class="our_collection_page   " >
+          <h6>Collection</h6>
+          <h4>{% if collection.title == blank %}
+            {{ 'homepage.onboarding.collection_title' | t }}
+            {% else %}
+            {{ collection.title }}
+            {% endif %}</h4>
+          <p>{{ collection.description }}</p>
+          <a href="{{ block.settings.url_link }}" class="btn">
+            LEARN MORE
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="clearfix"></div>
+{% else %}
+<div class="">
+  <div class="about_right_us_page">
+    <div class="about_right_us_page_img">
+      <img src="{{ 'bespoke-right-bg.png' | asset_url }}">
+    </div>
+    <div class="about_right_us_page_one">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 visible-xs">
+            <div class="about_right_us_page_one_right ">
+              <img src="{{ collection_image | img_url: 'master', format: 'pjpg' }}" class="js-printed-checker" alt="{{ collection.title }}">
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="our_collection_page "  >
+              <h6>Collection</h6>
+              <h4>{% if collection.title == blank %}
+                {{ 'homepage.onboarding.collection_title' | t }}
+                {% else %}
+                {{ collection.title }}
+                {% endif %}</h4>
+              <p>{{ collection.description }}</p>
+              <a href="{{ block.settings.url_link }}" class="btn">
+                LEARN MORE
+              </a>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 hidden-xs">
+            <div data-delighter class="about_right_us_page_one_right delighter bottom" >
+              <img src="{{ collection_image | img_url: 'master', format: 'pjpg' }}" alt="{{ collection.title }}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}

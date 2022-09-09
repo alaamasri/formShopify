@@ -1,0 +1,88 @@
+<section class="our_mission">
+  <div class="our_mission_main">
+    <div class="our_missn">
+      <div class="our_mission_img">
+        <img src="{{ section.settings.bg_image| img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.title }}">
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="our_mission_left">
+              <img class="r-zoom-in-out" src="{{ section.settings.mission_image| img_url: 'master', format: 'pjpg' }}" alt="{{ section.settings.title }}">
+            </div>
+          </div>
+          <div class="left  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="our_mission_right">
+              <h5>{{ section.settings.title }}</h5>
+              <h3> {{ section.settings.tag_line }}
+              </h3>
+              <p> {{ section.settings.details }}</p>
+              <a href="{{ section.settings.link }}" class="btn">
+                {{ section.settings.btn }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Home Our Mission",
+    "settings": [
+        {
+          "id": "bg_image",
+          "type": "image_picker",
+          "label": "BG Image"
+        },
+        {
+          "id": "mission_image",
+          "type": "image_picker",
+          "label": "Mission Image"
+        },
+        {
+          "id": "title",
+          "type": "text",
+          "label": "Title",
+          "default": "OUR MISSION"
+        },
+	    {
+          "id": "tag_line",
+          "type": "text",
+          "label": "Tag Line",
+          "default": "We firmly believe that <br> dressing right opens doors"
+        },
+        {
+          "id": "details",
+          "type": "textarea",
+          "label": "Details",
+          "default": "We design with the latest fashion trends in mind using innovative materials while focusing on the wearer’s personal style, which means our uniforms are not only stylish but also practical, wearable, washable and durable. Our motto is: “Workhard, look good, feel good!"
+        },  
+        {
+          "id": "btn",
+          "type": "text",
+          "label": "Button Label",
+          "default": "LEARN MORE"
+        },  
+        {
+          "id": "link",
+          "type": "url",
+          "label": "Button Link"
+        }		 	
+	],
+    "presets": [
+      {
+        "name": "Home Our Mission",
+        "category": "Custom"        
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

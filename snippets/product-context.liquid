@@ -1,0 +1,70 @@
+<script>
+    if (!window.productContext) {
+        window.productContext = {
+          product_id: '{{product.id}}'
+        };
+    }
+  
+    if (!window.productContext.variants) {
+        window.productContext.variants = {};
+    }
+  
+  {% for variant in product.variants %}
+    {% assign variantImageFront = variant.metafields.embroidery.variantImgFront %}
+    {% assign variantImageBack = variant.metafields.embroidery.variantImgBack  %}
+    {% assign variant_id = variant.id %}
+  	{% if variantImageFront != null %}
+  		window.productContext.variants['{{variant_id}}'] = {
+                                       front: {enabled:'{{variant.metafields.embroidery.enableFrontImage}}' ? true: false, url : '{{variantImageFront}}'},
+                                       back: {enabled: '{{variant.metafields.embroidery.enableBackImage}}' ? true: false, url :'{{variantImageBack}}'}
+                                       };
+    {% endif %}
+  {% endfor %}
+
+    window.productContext.breadcrumbs = [];
+
+    function buildBreadCrumbs(collectionHandle) {
+        if (collectionHandle && window.collectionContext.all_collections && window.collectionContext.all_collections[collectionHandle]) {
+            var parentCollectionHandle = window
+                .collectionContext
+                .all_collections[collectionHandle]
+                .parent_collection;
+
+            if (! parentCollectionHandle) {
+                return window.collectionContext.all_collections[collectionHandle];
+            } else {
+                if (parentCollectionHandle) {
+                    var collectionObj = buildBreadCrumbs(parentCollectionHandle);
+                    if (collectionObj) {
+                        window
+                            .productContext
+                            .breadcrumbs
+                            .push(collectionObj);
+                    }
+                } else {
+                    return null;
+                }
+            }
+        } else {
+            return null;
+        }
+    }
+
+    if (window.collectionContext && window.collectionContext.current_collection && window
+            .collectionContext
+            .current_collection
+            .handle) {
+
+        var currentCollectionHandle = window
+            .collectionContext
+            .current_collection
+            .handle;
+
+        buildBreadCrumbs(currentCollectionHandle);
+
+        window
+            .productContext
+            .breadcrumbs
+            .push(window.collectionContext.all_collections[currentCollectionHandle]);
+    }
+</script>
